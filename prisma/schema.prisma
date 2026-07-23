@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum ParticipantType {
+  STUDENT
+  TEACHER
+  PRINCIPAL
+}
+
+enum AdminRole {
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum AdminStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Registration {
+  id              String          @id @default(uuid())
+  reference       String          @unique // HXJR9-XXXXXX
+  fullName        String
+  mobileNumber    String          @unique // Stores normalized number
+  email           String?         @unique // Stores normalized lowercase email, nullable
+  participantType ParticipantType
+  school          String
+  grade           String?         // Conditional
+  awarenessSource String          // Stores selected option or custom text directly
+  createdAt       DateTime        @default(now())
+
+  @@index([participantType])
+  @@index([createdAt])
+}
+
+model AdminUser {
+  id           String      @id @default(uuid())
+  fullName     String
+  username     String      @unique // Stores normalized lowercase username
+  passwordHash String
+  role         AdminRole   @default(ADMIN)
+  status       AdminStatus @default(PENDING) // APPROVED, PENDING, REJECTED
+  createdAt    DateTime    @default(now())
+  sessions     Session[]
+
+  @@index([status])
+}
+
+model Session {
+  id               String    @id @default(uuid())
+  userId           String
+  user             AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionTokenHash String    @unique
+  expiresAt        DateTime
+  createdAt        DateTime  @default(now())
+  lastUsedAt       DateTime  @default(now())
+
+  @@index([userId])
+}
