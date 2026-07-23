@@ -27,7 +27,6 @@ enum AdminStatus {
 
 model Registration {
   id              String          @id @default(uuid())
-  reference       String          @unique // HXJR9-XXXXXX
   fullName        String
   mobileNumber    String          @unique // Stores normalized number
   email           String?         @unique // Stores normalized lowercase email, nullable

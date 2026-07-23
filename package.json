@@ -10,6 +10,7 @@
     "db:seed": "prisma db seed"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.4.0",
     "@prisma/client": "^6.2.1",
     "clsx": "^2.1.1",
     "framer-motion": "^11.18.2",
