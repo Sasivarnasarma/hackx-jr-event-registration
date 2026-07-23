@@ -115,3 +115,23 @@ export const registrationSchema = z
   );
 
 export type RegistrationInput = z.infer<typeof registrationSchema>;
+
+export const adminRegisterSchema = z.object({
+  fullName: z.string().min(2, "Full name must be at least 2 characters").max(100, "Full name is too long"),
+  username: z
+    .string()
+    .min(3, "Username must be at least 3 characters")
+    .max(30, "Username is too long")
+    .regex(/^[a-zA-Z0-9_\-]+$/, "Username can only contain alphanumeric characters, underscores, and hyphens"),
+  password: z.string().min(8, "Password must be at least 8 characters").max(100, "Password is too long"),
+});
+
+export type AdminRegisterInput = z.infer<typeof adminRegisterSchema>;
+
+export const adminLoginSchema = z.object({
+  username: z.string().min(1, "Username is required"),
+  password: z.string().min(1, "Password is required"),
+});
+
+export type AdminLoginInput = z.infer<typeof adminLoginSchema>;
+
