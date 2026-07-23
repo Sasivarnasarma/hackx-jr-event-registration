@@ -1,35 +1,68 @@
 import React from "react";
 import { verifySession } from "@/lib/session";
 import { redirect } from "next/navigation";
-import { LogoutButton } from "@/components/ui/logout-button";
+import { db } from "@/lib/db";
+import { AdminControls } from "@/components/ui/admin-controls";
+
+export const dynamic = "force-dynamic";
 
 export default async function AdminDashboardPage() {
   const session = await verifySession();
 
-  // Guard: If layouts bypass occurs, prevent page load
+  // Layout protection fallback check
   if (!session) {
     redirect("/admin/login");
   }
 
-  return (
-    <div className="p-8 max-w-4xl mx-auto z-10 relative">
-      <div className="flex items-center justify-between border-b border-slate-800 pb-6 mb-6">
-        <div>
-          <h1 className="text-3xl font-black font-heading text-white uppercase tracking-wide">
-            Admin Dashboard
-          </h1>
-          <p className="text-slate-400 mt-2 text-sm">
-            Welcome back, <span className="text-white font-medium">{session.user.fullName}</span>!
-          </p>
-        </div>
-        <LogoutButton />
-      </div>
+  // 1. Fetch registrations list
+  const registrations = await db.registration.findMany({
+    orderBy: { createdAt: "desc" },
+  });
 
-      <div className="glass-panel rounded-3xl p-6 text-center">
-        <p className="text-slate-400 text-sm">
-          Protected Administrator Panel Area. Database metrics and controls will be active here.
-        </p>
-      </div>
-    </div>
+  // 2. Fetch all admins (only if currently logged in user is SUPER_ADMIN)
+  let allAdmins: any[] = [];
+  if (session.user.role === "SUPER_ADMIN") {
+    allAdmins = await db.adminUser.findMany({
+      where: {
+        NOT: { id: session.user.id },
+      },
+      select: {
+        id: true,
+        fullName: true,
+        username: true,
+        status: true,
+        role: true,
+        createdAt: true,
+      },
+      orderBy: { createdAt: "desc" },
+    });
+  }
+
+  // Map dates to strings for hydration compatibility in client components
+  const serializedRegistrations = registrations.map((r: any) => ({
+    ...r,
+    createdAt: r.createdAt.toISOString(),
+  }));
+
+  const serializedAllAdmins = allAdmins.map((a: any) => ({
+    ...a,
+    createdAt: a.createdAt.toISOString(),
+  }));
+
+  const currentAdmin = {
+    id: session.user.id,
+    fullName: session.user.fullName,
+    username: session.user.username,
+    role: session.user.role,
+  };
+
+  return (
+    <main className="min-h-screen bg-[#010E13]">
+      <AdminControls
+        initialRegistrations={serializedRegistrations}
+        initialAdmins={serializedAllAdmins}
+        currentAdmin={currentAdmin}
+      />
+    </main>
   );
 }

@@ -124,6 +124,7 @@ export const adminRegisterSchema = z.object({
     .max(30, "Username is too long")
     .regex(/^[a-zA-Z0-9_\-]+$/, "Username can only contain alphanumeric characters, underscores, and hyphens"),
   password: z.string().min(8, "Password must be at least 8 characters").max(100, "Password is too long"),
+  turnstileToken: z.string().min(1, "Bot verification is required"),
 });
 
 export type AdminRegisterInput = z.infer<typeof adminRegisterSchema>;
@@ -131,6 +132,7 @@ export type AdminRegisterInput = z.infer<typeof adminRegisterSchema>;
 export const adminLoginSchema = z.object({
   username: z.string().min(1, "Username is required"),
   password: z.string().min(1, "Password is required"),
+  turnstileToken: z.string().min(1, "Bot verification is required"),
 });
 
 export type AdminLoginInput = z.infer<typeof adminLoginSchema>;

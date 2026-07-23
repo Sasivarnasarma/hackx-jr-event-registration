@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
@@ -9,15 +9,18 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { adminLoginSchema, type AdminLoginInput } from "@/lib/validation";
+import { Turnstile } from "@/components/ui/turnstile";
 
 export default function AdminLoginPage() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string>("");
   const [serverError, setServerError] = useState<string | null>(null);
 
   const {
     register,
     handleSubmit,
+    setValue,
     setError,
     formState: { errors },
   } = useForm<AdminLoginInput>({
@@ -25,8 +28,20 @@ export default function AdminLoginPage() {
     defaultValues: {
       username: "",
       password: "",
+      turnstileToken: "",
     }
   });
+
+  const onTurnstileVerify = useCallback((token: string) => {
+    setTurnstileToken(token);
+    setValue("turnstileToken", token, { shouldValidate: true });
+  }, [setValue]);
+
+  React.useEffect(() => {
+    if (process.env.NODE_ENV === "development") {
+      onTurnstileVerify("dummy");
+    }
+  }, [onTurnstileVerify]);
 
   const onSubmit = async (data: AdminLoginInput) => {
     setIsSubmitting(true);
@@ -69,6 +84,8 @@ export default function AdminLoginPage() {
       setIsSubmitting(false);
     }
   };
+
+  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA";
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center justify-center px-4 py-12 relative z-10">
@@ -157,11 +174,22 @@ export default function AdminLoginPage() {
             )}
           </div>
 
+          {/* Cloudflare Turnstile */}
+          <div className="space-y-2">
+            <Turnstile siteKey={siteKey} onVerify={onTurnstileVerify} />
+            {errors.turnstileToken && (
+              <p className="text-xs text-red-400 text-center flex items-center justify-center gap-1 font-light">
+                <AlertCircle className="w-3.5 h-3.5" />
+                {errors.turnstileToken.message}
+              </p>
+            )}
+          </div>
+
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || !turnstileToken}
             className="w-full btn-primary disabled:opacity-45 disabled:cursor-not-allowed mt-6"
           >
             {isSubmitting ? (

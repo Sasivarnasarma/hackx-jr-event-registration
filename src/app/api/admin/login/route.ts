@@ -5,6 +5,7 @@ import { generateRequestId, sendSuccess, sendError } from "@/lib/api-response";
 import { adminLoginSchema } from "@/lib/validation";
 import { verifyPassword } from "@/lib/security";
 import { createSession } from "@/lib/session";
+import { verifyTurnstileToken } from "@/lib/turnstile";
 
 export async function POST(request: NextRequest) {
   const requestId = generateRequestId();
@@ -21,8 +22,15 @@ export async function POST(request: NextRequest) {
       return sendError("VALIDATION_ERROR", "Username and password are required.", requestId, 422, { fields });
     }
 
-    const { username, password } = validation.data;
+    const { username, password, turnstileToken } = validation.data;
     const normalizedUsername = username.trim().toLowerCase();
+
+    // 2. Bot Verification check via Cloudflare Turnstile
+    const turnstileSuccess = await verifyTurnstileToken(turnstileToken, clientIp);
+    if (!turnstileSuccess) {
+      logger.warn({ requestId, clientIp }, "Admin login Turnstile token verification failed");
+      return sendError("BOT_VERIFICATION_FAILED", "Bot verification failed. Please try again.", requestId, 400);
+    }
 
     // 2. Fetch admin user
     const admin = await db.adminUser.findUnique({

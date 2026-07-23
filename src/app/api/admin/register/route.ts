@@ -4,6 +4,7 @@ import { logger } from "@/lib/logger";
 import { generateRequestId, sendSuccess, sendError } from "@/lib/api-response";
 import { adminRegisterSchema } from "@/lib/validation";
 import { hashPassword } from "@/lib/security";
+import { verifyTurnstileToken } from "@/lib/turnstile";
 
 export async function POST(request: NextRequest) {
   const requestId = generateRequestId();
@@ -20,8 +21,15 @@ export async function POST(request: NextRequest) {
       return sendError("VALIDATION_ERROR", "Some fields contain invalid values.", requestId, 422, { fields });
     }
 
-    const { fullName, username, password } = validation.data;
+    const { fullName, username, password, turnstileToken } = validation.data;
     const normalizedUsername = username.trim().toLowerCase();
+
+    // 2. Bot Verification check via Cloudflare Turnstile
+    const turnstileSuccess = await verifyTurnstileToken(turnstileToken, clientIp);
+    if (!turnstileSuccess) {
+      logger.warn({ requestId, clientIp }, "Admin registration Turnstile token verification failed");
+      return sendError("BOT_VERIFICATION_FAILED", "Bot verification failed. Please try again.", requestId, 400);
+    }
 
     // 2. Uniqueness check
     const existingAdmin = await db.adminUser.findUnique({

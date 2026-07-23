@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "framer-motion";
@@ -9,16 +9,19 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { adminRegisterSchema, type AdminRegisterInput } from "@/lib/validation";
+import { Turnstile } from "@/components/ui/turnstile";
 
 export default function AdminRegisterPage() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string>("");
   const [serverError, setServerError] = useState<string | null>(null);
   const [isRegistered, setIsRegistered] = useState(false);
 
   const {
     register,
     handleSubmit,
+    setValue,
     setError,
     formState: { errors },
   } = useForm<AdminRegisterInput>({
@@ -27,8 +30,20 @@ export default function AdminRegisterPage() {
       fullName: "",
       username: "",
       password: "",
+      turnstileToken: "",
     }
   });
+
+  const onTurnstileVerify = useCallback((token: string) => {
+    setTurnstileToken(token);
+    setValue("turnstileToken", token, { shouldValidate: true });
+  }, [setValue]);
+
+  React.useEffect(() => {
+    if (process.env.NODE_ENV === "development") {
+      onTurnstileVerify("dummy");
+    }
+  }, [onTurnstileVerify]);
 
   const onSubmit = async (data: AdminRegisterInput) => {
     setIsSubmitting(true);
@@ -67,9 +82,11 @@ export default function AdminRegisterPage() {
     }
   };
 
+  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA";
+
   return (
     <div className="w-full min-h-screen flex flex-col items-center justify-center px-4 py-12 relative z-10">
-
+      
       {/* Brand Header with Logo */}
       <div className="text-center mb-8 flex flex-col items-center">
         <motion.div
@@ -122,8 +139,9 @@ export default function AdminRegisterPage() {
                   placeholder="Enter your full name"
                   {...register("fullName")}
                   suppressHydrationWarning
-                  className={`w-full px-4 py-3 rounded-xl glass-input outline-none text-sm ${errors.fullName ? "border-red-500/50 focus:border-red-500" : ""
-                    }`}
+                  className={`w-full px-4 py-3 rounded-xl glass-input outline-none text-sm ${
+                    errors.fullName ? "border-red-500/50 focus:border-red-500" : ""
+                  }`}
                 />
                 {errors.fullName && (
                   <p className="text-xs text-red-400 flex items-center gap-1 mt-1 font-light">
@@ -144,8 +162,9 @@ export default function AdminRegisterPage() {
                   placeholder="e.g. admin_username"
                   {...register("username")}
                   suppressHydrationWarning
-                  className={`w-full px-4 py-3 rounded-xl glass-input outline-none text-sm ${errors.username ? "border-red-500/50 focus:border-red-500" : ""
-                    }`}
+                  className={`w-full px-4 py-3 rounded-xl glass-input outline-none text-sm ${
+                    errors.username ? "border-red-500/50 focus:border-red-500" : ""
+                  }`}
                 />
                 {errors.username && (
                   <p className="text-xs text-red-400 flex items-center gap-1 mt-1 font-light">
@@ -166,8 +185,9 @@ export default function AdminRegisterPage() {
                   placeholder="••••••••"
                   {...register("password")}
                   suppressHydrationWarning
-                  className={`w-full px-4 py-3 rounded-xl glass-input outline-none text-sm ${errors.password ? "border-red-500/50 focus:border-red-500" : ""
-                    }`}
+                  className={`w-full px-4 py-3 rounded-xl glass-input outline-none text-sm ${
+                    errors.password ? "border-red-500/50 focus:border-red-500" : ""
+                  }`}
                 />
                 {errors.password && (
                   <p className="text-xs text-red-400 flex items-center gap-1 mt-1 font-light">
@@ -177,11 +197,22 @@ export default function AdminRegisterPage() {
                 )}
               </div>
 
+              {/* Cloudflare Turnstile */}
+              <div className="space-y-2">
+                <Turnstile siteKey={siteKey} onVerify={onTurnstileVerify} />
+                {errors.turnstileToken && (
+                  <p className="text-xs text-red-400 text-center flex items-center justify-center gap-1 font-light">
+                    <AlertCircle className="w-3.5 h-3.5" />
+                    {errors.turnstileToken.message}
+                  </p>
+                )}
+              </div>
+
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || !turnstileToken}
                 className="w-full btn-primary disabled:opacity-45 disabled:cursor-not-allowed mt-6"
               >
                 {isSubmitting ? (
