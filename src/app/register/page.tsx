@@ -15,6 +15,9 @@ import {
   AlertCircle,
   Loader2,
   CheckCircle2,
+  Calendar,
+  MapPin,
+  Clock,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -186,7 +189,7 @@ export default function RegisterPage() {
       </div>
 
       {/* Main Split-Style Container */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
         {/* Registration Form Card */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -199,7 +202,7 @@ export default function RegisterPage() {
               "--mouse-y": `${mousePosition.y}px`,
             } as React.CSSProperties
           }
-          className="glass-panel lg:col-span-8 rounded-3xl p-6 md:p-10 relative overflow-hidden"
+          className="glass-panel order-2 lg:order-1 lg:col-span-8 rounded-3xl p-6 md:p-10 relative overflow-hidden h-full flex flex-col"
         >
           <div className="mouse-spotlight" />
 
@@ -487,42 +490,88 @@ export default function RegisterPage() {
           </form>
         </motion.div>
 
-        {/* Right Info Column (From hackX UI Portal) */}
+        {/* Right Info Column (Info Panel Layout) */}
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="glass-panel lg:col-span-4 rounded-3xl p-6 md:p-8 flex flex-col justify-between space-y-6"
+          className="glass-panel order-1 lg:order-2 lg:col-span-4 rounded-3xl p-6 md:p-8 flex flex-col justify-between space-y-6 h-full"
         >
           <div className="space-y-6">
-            <div>
-              <h3 className="font-heading font-extrabold text-lg text-white mb-2 tracking-wide">
+            <div className="space-y-3">
+              <h3 className="font-heading font-extrabold text-lg text-white mb-2 tracking-wide text-center">
                 hackX Jr. 9.0 Awareness Session
               </h3>
-              <p className="text-sm text-[#8ba3c7] leading-relaxed">
-                Join our exclusive awareness session to learn everything about hackX Jr. 9.0 — Sri Lanka’s premier island-wide school innovation hackathon. Discover how to build groundbreaking technology solutions and succeed in the competition.
+              <p className="text-sm text-[#8ba3c7] leading-relaxed text-justify">
+                Join our exclusive awareness session to learn everything about hackX Jr. 9.0 — Sri
+                Lanka’s premier island-wide school innovation hackathon. Discover how to build
+                groundbreaking technology solutions and succeed in the competition.
               </p>
             </div>
 
+            {/* Event Details Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-b border-white/5 py-4 text-center">
+              <div className="flex flex-col items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-[#052E3F] border border-[#72E5F8]/20 flex items-center justify-center flex-shrink-0">
+                  <Calendar className="w-4 h-4 text-[#72E5F8]" />
+                </div>
+                <div>
+                  <span className="text-[9px] text-slate-500 uppercase tracking-wide block">
+                    Date
+                  </span>
+                  <span className="text-xs font-bold text-white">1st Aug 2026</span>
+                </div>
+              </div>
+
+              <div className="flex flex-col items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-[#052E3F] border border-[#72E5F8]/20 flex items-center justify-center flex-shrink-0">
+                  <MapPin className="w-4 h-4 text-[#72E5F8]" />
+                </div>
+                <div>
+                  <span className="text-[9px] text-slate-500 uppercase tracking-wide block">
+                    Venue
+                  </span>
+                  <span className="text-xs font-bold text-white">A8 Auditorium</span>
+                </div>
+              </div>
+
+              <div className="flex flex-col items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-[#052E3F] border border-[#72E5F8]/20 flex items-center justify-center flex-shrink-0">
+                  <Clock className="w-4 h-4 text-[#72E5F8]" />
+                </div>
+                <div>
+                  <span className="text-[9px] text-slate-500 uppercase tracking-wide block">
+                    Time
+                  </span>
+                  <span className="text-xs font-bold text-white">09:00 AM</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Highlight Points */}
             <div className="space-y-3">
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-[#5BB8FF] flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-slate-300">
-                  <strong className="text-white">National Recognition:</strong> Compete with top young innovators from schools across Sri Lanka's 25 districts.
+                  <strong className="text-white">National Recognition:</strong> Compete with top
+                  young innovators from schools across Sri Lanka's 25 districts.
                 </p>
               </div>
 
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-[#5BB8FF] flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-slate-300">
-                  <strong className="text-white">Online Workshops:</strong> Join live online sessions covering hackathons, innovation through technology, and proposal crafting.
+                  <strong className="text-white">Online Workshops:</strong> Join live online
+                  sessions covering hackathons, innovation through technology, and proposal
+                  crafting.
                 </p>
               </div>
 
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-[#5BB8FF] flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-slate-300">
-                  <strong className="text-white">Industry Mentorship:</strong> Semi-finalist teams get paired with dedicated industry mentors to guide them through the final stage.
+                  <strong className="text-white">Industry Mentorship:</strong> Semi-finalist teams
+                  get paired with dedicated industry mentors to guide them through the final stage.
                 </p>
               </div>
             </div>

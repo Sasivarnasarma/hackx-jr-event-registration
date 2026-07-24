@@ -85,10 +85,10 @@
   color-scheme: dark;
   /* Brand Palette */
   --color-void: #010814;
-  --color-deep-space: #041A3A;
-  --color-horizon: #0A3878;
-  --color-electric: #1A6FD4;
-  --color-arc: #5BB8FF;
+  --color-deep-space: #041a3a;
+  --color-horizon: #0a3878;
+  --color-electric: #1a6fd4;
+  --color-arc: #5bb8ff;
 
   /* Semantic Aliases */
   --color-bg-deep: var(--color-void);
@@ -106,8 +106,8 @@
   --glass-border-hover: rgba(91, 184, 255, 0.25);
 
   /* Fonts */
-  --font-heading: 'TT Hoves Pro Expanded', 'TT Hoves Pro', system-ui, sans-serif;
-  --font-body: 'TT Hoves Pro', system-ui, sans-serif;
+  --font-heading: "TT Hoves Pro Expanded", "TT Hoves Pro", system-ui, sans-serif;
+  --font-body: "TT Hoves Pro", system-ui, sans-serif;
 
   /* Transitions */
   --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -141,7 +141,7 @@ body {
 
 /* Subtle full-page gradient underlay */
 body::before {
-  content: '';
+  content: "";
   position: fixed;
   inset: 0;
   background:
@@ -189,13 +189,21 @@ body::before {
 }
 
 @keyframes drift-1 {
-  0%   { transform: translate(0, 0) scale(1); }
-  100% { transform: translate(60px, -40px) scale(1.15); }
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    transform: translate(60px, -40px) scale(1.15);
+  }
 }
 
 @keyframes drift-2 {
-  0%   { transform: translate(0, 0) scale(1); }
-  100% { transform: translate(-50px, 30px) scale(1.1); }
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    transform: translate(-50px, 30px) scale(1.1);
+  }
 }
 
 /* ── Particle Field ───────────────── */
@@ -251,7 +259,7 @@ body::before {
 }
 
 .glass-panel::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
@@ -316,13 +324,17 @@ body::before {
   height: 100%;
   pointer-events: none;
   z-index: 0;
-  background-image: radial-gradient(800px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(91, 184, 255, 0.08), transparent 40%);
+  background-image: radial-gradient(
+    800px circle at var(--mouse-x, 0) var(--mouse-y, 0),
+    rgba(91, 184, 255, 0.08),
+    transparent 40%
+  );
   transition: opacity 0.3s;
 }
 
 /* ── Buttons ───────────────────────────────────────────────── */
 .btn-primary {
-  background: linear-gradient(135deg, #1A6FD4 0%, #5BB8FF 60%, #1A6FD4 100%);
+  background: linear-gradient(135deg, #1a6fd4 0%, #5bb8ff 60%, #1a6fd4 100%);
   background-size: 200% 200%;
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -345,7 +357,7 @@ body::before {
 }
 
 .btn-primary::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -150%;
@@ -378,7 +390,8 @@ body::before {
 }
 
 @keyframes glow-pulse {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow:
       0 0 20px rgba(26, 111, 212, 0.35),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
@@ -391,9 +404,15 @@ body::before {
 }
 
 @keyframes shimmer-effect {
-  0% { left: -150%; }
-  50% { left: 150%; }
-  100% { left: 150%; }
+  0% {
+    left: -150%;
+  }
+  50% {
+    left: 150%;
+  }
+  100% {
+    left: 150%;
+  }
 }
 
 /* Custom Scrollbars */
