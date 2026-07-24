@@ -64,23 +64,38 @@ export default function RegisterPage() {
     [setValue]
   );
 
-  React.useEffect(() => {
-    const isLocal =
-      process.env.NODE_ENV === "development" ||
-      (typeof window !== "undefined" &&
-        (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"));
-
-    if (isLocal) {
-      onTurnstileVerify("dummy");
-    }
-  }, [onTurnstileVerify]);
-
   const onSubmit = async (data: RegistrationInput) => {
     setIsSubmitting(true);
     setServerError(null);
 
+    // Dynamic Turnstile Token Resolution
+    let currentToken = turnstileToken;
+    const isLocalOrDummy =
+      process.env.NODE_ENV === "development" ||
+      siteKey === "1x00000000000000000000AA" ||
+      (typeof window !== "undefined" &&
+        (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"));
+
+    if (isLocalOrDummy && !currentToken) {
+      currentToken = "dummy";
+    }
+
+    if (!currentToken) {
+      setError("turnstileToken", {
+        type: "manual",
+        message: "Bot verification is required. Please solve the captcha.",
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Prepare payload with resolved token
+    const payload = {
+      ...data,
+      turnstileToken: currentToken,
+    };
+
     // If "Other" source was selected, override awarenessSource with the custom text input
-    let payload = { ...data };
     if (selectedSource === "Other") {
       if (!customSource.trim()) {
         setError("awarenessSource", {
@@ -419,7 +434,7 @@ export default function RegisterPage() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             type="submit"
-            disabled={isSubmitting || !turnstileToken}
+            disabled={isSubmitting}
             className="w-full btn-primary disabled:opacity-45 disabled:cursor-not-allowed mt-6"
           >
             {isSubmitting ? (
