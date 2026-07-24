@@ -508,21 +508,21 @@ export default function RegisterPage() {
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-[#5BB8FF] flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-slate-300">
-                  <strong className="text-white">Expert Guidance:</strong> Learn from software industry leaders and university mentors.
+                  <strong className="text-white">National Recognition:</strong> Compete with top young innovators from schools across Sri Lanka's 25 districts.
                 </p>
               </div>
 
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-[#5BB8FF] flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-slate-300">
-                  <strong className="text-white">National Recognition:</strong> Compete with top young minds across all 25 districts in Sri Lanka.
+                  <strong className="text-white">Online Workshops:</strong> Join live online sessions covering hackathons, innovation through technology, and proposal crafting.
                 </p>
               </div>
 
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-[#5BB8FF] flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-slate-300">
-                  <strong className="text-white">Hands-on Workshops:</strong> Master problem-solving, UI/UX design, and pitch presentations.
+                  <strong className="text-white">Industry Mentorship:</strong> Semi-finalist teams get paired with dedicated industry mentors to guide them through the final stage.
                 </p>
               </div>
             </div>
