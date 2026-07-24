@@ -43,7 +43,12 @@ export default function AdminRegisterPage() {
   );
 
   React.useEffect(() => {
-    if (process.env.NODE_ENV === "development") {
+    const isLocal =
+      process.env.NODE_ENV === "development" ||
+      (typeof window !== "undefined" &&
+        (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"));
+
+    if (isLocal) {
       onTurnstileVerify("dummy");
     }
   }, [onTurnstileVerify]);

@@ -1,36 +1,164 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌌 hackX Jr. 9.0 — Event Registration Portal
 
-## Getting Started
+> **A high-performance, glassmorphic registration gateway and administrative portal built for the hackX Jr. 9.0 national hackathon series.**
 
-First, run the development server:
+This portal features a fluid public registration system and a secure administrator dashboard for stats auditing, record searches, filtering, CSV spreadsheet exports, status audits, and credentials management.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## 🚀 Key Features
+
+### 1. Public Registration Portal (`/register`)
+
+- **Modern UI / UX**: A fully glassmorphic deep space theme using local `TT Hoves Pro` fonts, fluid neon glow accents, and custom background particle animations.
+- **Conditional Fields**: Seamless form fields requesting grades (8 to 13, and other) for student participants, hiding unnecessary prompts for teachers and principals.
+- **Uniqueness Safeguards**: Pre-insertion validations preventing duplicate mobile numbers or email registrations.
+
+### 2. Secure Admin Authentication (`/admin/login`, `/admin/register`)
+
+- **Cookie Session Management**: Secure `HttpOnly` session tracking backed by a database session pool with automated middleware checking (`src/proxy.ts`).
+- **Hashing Security**: Passwords are securely hashed using WASM-backed **Argon2id** (`hash-wasm`).
+- **Bot Protection**: Login and registration endpoints are protected via **Cloudflare Turnstile** captcha token verification.
+- **Auto Redirection Routing**: Navigating to `/admin` automatically determines authentication state server-side, routing active sessions to the dashboard or anonymous requests to the login gateway.
+
+### 3. Administrator Dashboard (`/admin/dashboard`)
+
+- **Key Metrics & Statistics**: Pulsing statistics cards displaying total registrations, student percentages, teacher metrics, and principal counts.
+- **Advanced Sorting & Filtering**:
+  - Multi-column sorting (Date Registered, Full Name, School Name).
+  - Dynamic filtering (via unique school names parsed from registration data).
+- **Super Admin Audit Portal**:
+  - View all administrative accounts.
+  - Update admin account approvals (`PENDING`, `APPROVED`, `REJECTED`) inline.
+  - Perform inline password resets with active session revocation.
+- **Normal Admin Restraints**: Non-super admins get a clean registrations table with the stats toggles and audit controls hidden.
+- **Sticky Blur Headers & Custom Scrollbars**:
+  - Viewing panels scroll inside a `60vh` box with sticky table headers that blur contents rolling underneath them.
+  - Custom glowing scrollbars matching the color scheme.
+- **Skeleton Loader Screen**: Instantly displays a pulsing glass layout during server-side database queries.
+- **Secure CSV Export**: Export all matching rows with cell escaping to prevent formula injection.
+
+---
+
+## 🛠️ Technology Stack
+
+- **Framework**: [Next.js 16.2](https://nextjs.org/) (App Router, dynamic pre-rendering)
+- **Database ORM**: [Prisma Client 6.2](https://www.prisma.io/) (PostgreSQL client)
+- **Database Host**: [Supabase PostgreSQL](https://supabase.com/)
+- **Styling**: [TailwindCSS v4](https://tailwindcss.com/) & Vanilla CSS variables
+- **Animations**: [Framer Motion](https://www.framer.com/motion/)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **Validation**: [Zod](https://zod.dev/) & [React Hook Form](https://react-hook-form.com/)
+
+---
+
+## 📂 Database Schema
+
+The database uses integer autoincrementing primary keys (`1, 2, 3...`):
+
+### 1. `Registration`
+
+- `id`: `Int` autoincrement primary key.
+- `fullName`: `String` (Participant name).
+- `mobileNumber`: `String` (Unique normalized number).
+- `email`: `String?` (Unique normalized lowercase, optional).
+- `participantType`: `STUDENT` | `TEACHER` | `PRINCIPAL`
+- `school`: `String` (School name).
+- `grade`: `String?` (Selected student grade).
+- `awarenessSource`: `String` (Source of information).
+- `createdAt`: `DateTime` (Timestamp).
+
+### 2. `AdminUser`
+
+- `id`: `Int` autoincrement primary key.
+- `fullName`: `String`.
+- `username`: `String` (Unique lowercase).
+- `passwordHash`: `String` (Argon2id hash).
+- `role`: `ADMIN` | `SUPER_ADMIN`
+- `status`: `PENDING` | `APPROVED` | `REJECTED`
+- `createdAt`: `DateTime`.
+
+### 3. `Session`
+
+- `id`: `String` UUID primary key.
+- `userId`: `Int` (Foreign key to `AdminUser`).
+- `sessionTokenHash`: `String` (Unique hashed token).
+- `expiresAt`: `DateTime` (Session lifespan).
+
+---
+
+## ⚙️ Environment Configuration
+
+Create a `.env` file in the root of the project with the following parameters:
+
+```env
+# Database Connections (Supabase Pooler & Direct Connection)
+DATABASE_URL="postgresql://postgres.xxxxxx:password@aws-0-ap-south-1.pooler.supabase.com:5432/postgres?pgbouncer=true"
+DIRECT_URL="postgresql://postgres.xxxxxx:password@aws-0-ap-south-1.pooler.supabase.com:5432/postgres"
+
+# JWT / Cookie Encryption Keys
+SESSION_SECRET="your_long_session_cookie_secret_key"
+
+# Cloudflare Turnstile Keys
+NEXT_PUBLIC_TURNSTILE_SITE_KEY="1x00000000000000000000AA" # Dev Dummy Site Key
+TURNSTILE_SECRET_KEY="1x00000000000000000000000000000000" # Dev Dummy Secret Key
+
+# Default Seed Super Admin Credentials
+SUPER_ADMIN_NAME="Super Admin"
+SUPER_ADMIN_USERNAME="admin"
+SUPER_ADMIN_PASSWORD="securepassword123"
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🛠️ Getting Started & Commands
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 1. Install Dependencies
 
-## Learn More
+```bash
+pnpm install
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 2. Apply Database Migrations
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm prisma db push
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 3. Seed Super Admin
 
-## Deploy on Vercel
+```bash
+pnpm db:seed
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 4. Run Development Server
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+pnpm dev
+```
+
+### 5. Format Codebase
+
+```bash
+pnpm format
+```
+
+### 6. Run Quality Checks
+
+```bash
+pnpm lint      # ESLint static analysis
+pnpm typecheck # Strict TypeScript compiler verification
+pnpm build     # Next.js production build check
+```
+
+---
+
+## 📦 Deployment on Vercel
+
+The project compiles on Vercel using the configured build script command:
+
+```bash
+prisma generate && next build
+```
+
+This ensures the database bindings compile cleanly before Next.js begins static type audits!

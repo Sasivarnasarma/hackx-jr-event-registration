@@ -58,6 +58,7 @@ export function Turnstile({ siteKey, onVerify, theme = "dark" }: TurnstileProps)
     // 4. Dynamically inject Cloudflare Turnstile script
     const scriptId = "cloudflare-turnstile-script";
     let script = document.getElementById(scriptId) as HTMLScriptElement;
+    let checkInterval: any = null;
 
     if (!script) {
       script = document.createElement("script");
@@ -66,13 +67,21 @@ export function Turnstile({ siteKey, onVerify, theme = "dark" }: TurnstileProps)
       script.async = true;
       script.defer = true;
       document.body.appendChild(script);
-    } else if ((window as any).turnstile) {
-      // Script is already loaded and turnstile object is ready
-      renderWidget();
+    } else {
+      // Script element exists. Poll until turnstile object is fully loaded
+      checkInterval = setInterval(() => {
+        if ((window as any).turnstile) {
+          clearInterval(checkInterval);
+          renderWidget();
+        }
+      }, 50);
     }
 
     // 5. Cleanup on unmount
     return () => {
+      if (checkInterval) {
+        clearInterval(checkInterval);
+      }
       if (widgetIdRef.current && (window as any).turnstile) {
         try {
           (window as any).turnstile.remove(widgetIdRef.current);
