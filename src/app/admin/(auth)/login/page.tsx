@@ -29,13 +29,16 @@ export default function AdminLoginPage() {
       username: "",
       password: "",
       turnstileToken: "",
-    }
+    },
   });
 
-  const onTurnstileVerify = useCallback((token: string) => {
-    setTurnstileToken(token);
-    setValue("turnstileToken", token, { shouldValidate: true });
-  }, [setValue]);
+  const onTurnstileVerify = useCallback(
+    (token: string) => {
+      setTurnstileToken(token);
+      setValue("turnstileToken", token, { shouldValidate: true });
+    },
+    [setValue]
+  );
 
   React.useEffect(() => {
     if (process.env.NODE_ENV === "development") {
@@ -63,7 +66,7 @@ export default function AdminLoginPage() {
             setError(key as any, { type: "server", message: messages[0] });
           });
         } else if (
-          result.error?.code === "PENDING_APPROVAL" || 
+          result.error?.code === "PENDING_APPROVAL" ||
           result.error?.code === "ACCOUNT_REJECTED"
         ) {
           setServerError(result.message);
@@ -77,7 +80,6 @@ export default function AdminLoginPage() {
       // Success, route to dashboard landing page
       router.push("/admin/dashboard");
       router.refresh();
-
     } catch (err) {
       console.error(err);
       setServerError("Connection failed. Please check your internet connection.");
@@ -89,7 +91,6 @@ export default function AdminLoginPage() {
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center justify-center px-4 py-12 relative z-10">
-      
       {/* Brand Header with Logo */}
       <div className="text-center mb-8 flex flex-col items-center">
         <motion.div

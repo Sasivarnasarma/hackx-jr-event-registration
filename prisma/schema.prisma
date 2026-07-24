@@ -26,7 +26,7 @@ enum AdminStatus {
 }
 
 model Registration {
-  id              String          @id @default(uuid())
+  id              Int             @id @default(autoincrement())
   fullName        String
   mobileNumber    String          @unique // Stores normalized number
   email           String?         @unique // Stores normalized lowercase email, nullable
@@ -41,7 +41,7 @@ model Registration {
 }
 
 model AdminUser {
-  id           String      @id @default(uuid())
+  id           Int         @id @default(autoincrement())
   fullName     String
   username     String      @unique // Stores normalized lowercase username
   passwordHash String
@@ -55,7 +55,7 @@ model AdminUser {
 
 model Session {
   id               String    @id @default(uuid())
-  userId           String
+  userId           Int
   user             AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
   sessionTokenHash String    @unique
   expiresAt        DateTime

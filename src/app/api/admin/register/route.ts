@@ -12,13 +12,15 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    
+
     // 1. Validation
     const validation = adminRegisterSchema.safeParse(body);
     if (!validation.success) {
       const fields = validation.error.flatten().fieldErrors;
       logger.warn({ requestId, fields }, "Admin registration validation failed");
-      return sendError("VALIDATION_ERROR", "Some fields contain invalid values.", requestId, 422, { fields });
+      return sendError("VALIDATION_ERROR", "Some fields contain invalid values.", requestId, 422, {
+        fields,
+      });
     }
 
     const { fullName, username, password, turnstileToken } = validation.data;
@@ -27,8 +29,16 @@ export async function POST(request: NextRequest) {
     // 2. Bot Verification check via Cloudflare Turnstile
     const turnstileSuccess = await verifyTurnstileToken(turnstileToken, clientIp);
     if (!turnstileSuccess) {
-      logger.warn({ requestId, clientIp }, "Admin registration Turnstile token verification failed");
-      return sendError("BOT_VERIFICATION_FAILED", "Bot verification failed. Please try again.", requestId, 400);
+      logger.warn(
+        { requestId, clientIp },
+        "Admin registration Turnstile token verification failed"
+      );
+      return sendError(
+        "BOT_VERIFICATION_FAILED",
+        "Bot verification failed. Please try again.",
+        requestId,
+        400
+      );
     }
 
     // 2. Uniqueness check
@@ -40,7 +50,7 @@ export async function POST(request: NextRequest) {
     if (existingAdmin) {
       logger.warn({ requestId, username: normalizedUsername }, "Username registration collision");
       return sendError("DUPLICATE_USERNAME", "This username is already taken.", requestId, 409, {
-        fields: { username: ["This username is already taken."] }
+        fields: { username: ["This username is already taken."] },
       });
     }
 
@@ -58,7 +68,10 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    logger.info({ requestId, adminId: newAdmin.id, username: normalizedUsername }, "New admin user registered as PENDING");
+    logger.info(
+      { requestId, adminId: newAdmin.id, username: normalizedUsername },
+      "New admin user registered as PENDING"
+    );
 
     return sendSuccess(
       { username: normalizedUsername, status: "PENDING" },
@@ -67,9 +80,16 @@ export async function POST(request: NextRequest) {
       null,
       201
     );
-
   } catch (error: any) {
-    logger.error({ requestId, error: error.message, stack: error.stack }, "Unhandled error during admin registration");
-    return sendError("INTERNAL_SERVER_ERROR", "An unexpected error occurred. Please try again.", requestId, 500);
+    logger.error(
+      { requestId, error: error.message, stack: error.stack },
+      "Unhandled error during admin registration"
+    );
+    return sendError(
+      "INTERNAL_SERVER_ERROR",
+      "An unexpected error occurred. Please try again.",
+      requestId,
+      500
+    );
   }
 }

@@ -31,7 +31,13 @@ export function apiResponse(options: ApiResponseOptions, status: number = 200) {
 /**
  * Standardized Success Response helper.
  */
-export function sendSuccess(data: any, message: string, requestId: string, meta: any = null, status: number = 200) {
+export function sendSuccess(
+  data: any,
+  message: string,
+  requestId: string,
+  meta: any = null,
+  status: number = 200
+) {
   return apiResponse(
     {
       success: true,

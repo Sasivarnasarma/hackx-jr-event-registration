@@ -7,9 +7,9 @@ export async function verifyTurnstileToken(token: string, ip?: string): Promise<
   // Bypasses validation during local development if dummy Turnstile test keys are configured
   if (
     env.NODE_ENV === "development" &&
-    (token === "dummy" || 
-     env.TURNSTILE_SECRET_KEY.startsWith("1x") || 
-     env.TURNSTILE_SECRET_KEY.startsWith("2x"))
+    (token === "dummy" ||
+      env.TURNSTILE_SECRET_KEY.startsWith("1x") ||
+      env.TURNSTILE_SECRET_KEY.startsWith("2x"))
   ) {
     console.log("ℹ️ Turnstile verification bypassed in development mode using dummy keys");
     return true;

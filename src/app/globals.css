@@ -2,43 +2,43 @@
 
 /* ── TT Hoves Pro — Body ── */
 @font-face {
-  font-family: 'TT Hoves Pro';
-  src: url('/fonts/TT Hoves Pro Trial Light.ttf') format('truetype');
+  font-family: "TT Hoves Pro";
+  src: url("/fonts/TT Hoves Pro Trial Light.ttf") format("truetype");
   font-weight: 300;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'TT Hoves Pro';
-  src: url('/fonts/TT Hoves Pro Trial Regular.ttf') format('truetype');
+  font-family: "TT Hoves Pro";
+  src: url("/fonts/TT Hoves Pro Trial Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'TT Hoves Pro';
-  src: url('/fonts/TT Hoves Pro Trial Medium.ttf') format('truetype');
+  font-family: "TT Hoves Pro";
+  src: url("/fonts/TT Hoves Pro Trial Medium.ttf") format("truetype");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'TT Hoves Pro';
-  src: url('/fonts/TT Hoves Pro Trial Bold.ttf') format('truetype');
+  font-family: "TT Hoves Pro";
+  src: url("/fonts/TT Hoves Pro Trial Bold.ttf") format("truetype");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'TT Hoves Pro';
-  src: url('/fonts/TT Hoves Pro Trial ExtraBold.ttf') format('truetype');
+  font-family: "TT Hoves Pro";
+  src: url("/fonts/TT Hoves Pro Trial ExtraBold.ttf") format("truetype");
   font-weight: 800;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'TT Hoves Pro';
-  src: url('/fonts/TT Hoves Pro Trial Black.ttf') format('truetype');
+  font-family: "TT Hoves Pro";
+  src: url("/fonts/TT Hoves Pro Trial Black.ttf") format("truetype");
   font-weight: 900;
   font-style: normal;
   font-display: swap;
@@ -46,56 +46,56 @@
 
 /* ── TT Hoves Pro Expanded — Display ── */
 @font-face {
-  font-family: 'TT Hoves Pro Expanded';
-  src: url('/fonts/TT Hoves Pro Trial Expanded Regular.ttf') format('truetype');
+  font-family: "TT Hoves Pro Expanded";
+  src: url("/fonts/TT Hoves Pro Trial Expanded Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'TT Hoves Pro Expanded';
-  src: url('/fonts/TT Hoves Pro Trial Expanded Medium.ttf') format('truetype');
+  font-family: "TT Hoves Pro Expanded";
+  src: url("/fonts/TT Hoves Pro Trial Expanded Medium.ttf") format("truetype");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'TT Hoves Pro Expanded';
-  src: url('/fonts/TT Hoves Pro Trial Expanded Bold.ttf') format('truetype');
+  font-family: "TT Hoves Pro Expanded";
+  src: url("/fonts/TT Hoves Pro Trial Expanded Bold.ttf") format("truetype");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'TT Hoves Pro Expanded';
-  src: url('/fonts/TT Hoves Pro Trial Expanded ExtraBold.ttf') format('truetype');
+  font-family: "TT Hoves Pro Expanded";
+  src: url("/fonts/TT Hoves Pro Trial Expanded ExtraBold.ttf") format("truetype");
   font-weight: 800;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'TT Hoves Pro Expanded';
-  src: url('/fonts/TT Hoves Pro Trial Expanded Black.ttf') format('truetype');
+  font-family: "TT Hoves Pro Expanded";
+  src: url("/fonts/TT Hoves Pro Trial Expanded Black.ttf") format("truetype");
   font-weight: 900;
   font-style: normal;
   font-display: swap;
 }
 
 :root {
-  --background: #010E13;
+  --background: #010e13;
   --foreground: #f0f4ff;
-  --color-void: #010E13;
-  --color-deep-space: #052E3F;
-  --color-horizon: #0A5C72;
-  --color-electric: #18A0C0;
-  --color-arc: #72E5F8;
-  
+  --color-void: #010e13;
+  --color-deep-space: #052e3f;
+  --color-horizon: #0a5c72;
+  --color-electric: #18a0c0;
+  --color-arc: #72e5f8;
+
   --glass-bg: rgba(5, 46, 63, 0.45);
   --glass-border: rgba(255, 255, 255, 0.07);
   --glass-border-hover: rgba(114, 229, 248, 0.25);
-  
-  --font-heading: 'TT Hoves Pro Expanded', 'TT Hoves Pro', system-ui, sans-serif;
-  --font-body: 'TT Hoves Pro', system-ui, sans-serif;
+
+  --font-heading: "TT Hoves Pro Expanded", "TT Hoves Pro", system-ui, sans-serif;
+  --font-body: "TT Hoves Pro", system-ui, sans-serif;
 }
 
 @theme inline {
@@ -206,7 +206,11 @@ body {
   position: absolute;
   bottom: -20px;
   border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, rgba(114, 229, 248, 0.4), rgba(24, 160, 192, 0.05));
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(114, 229, 248, 0.4),
+    rgba(24, 160, 192, 0.05)
+  );
   box-shadow: 0 0 6px rgba(114, 229, 248, 0.2);
   animation: floatUp 15s infinite linear;
   opacity: 0.6;
@@ -231,7 +235,7 @@ body {
 
 /* btn-primary style matching hackX Jr */
 .btn-primary {
-  background: linear-gradient(135deg, #0A5C72 0%, #18A0C0 60%, #0A5C72 100%);
+  background: linear-gradient(135deg, #0a5c72 0%, #18a0c0 60%, #0a5c72 100%);
   background-size: 200% 200%;
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -254,7 +258,7 @@ body {
 }
 
 .btn-primary::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -150%;
@@ -287,18 +291,59 @@ body {
 }
 
 @keyframes glow-pulse {
-  0%, 100% {
-    box-shadow: 0 0 15px rgba(24, 160, 192, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  0%,
+  100% {
+    box-shadow:
+      0 0 15px rgba(24, 160, 192, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
   50% {
-    box-shadow: 0 0 25px rgba(114, 229, 248, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    box-shadow:
+      0 0 25px rgba(114, 229, 248, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
 }
 
 @keyframes shimmer-effect {
-  0% { left: -150%; }
-  50% { left: 150%; }
-  100% { left: 150%; }
+  0% {
+    left: -150%;
+  }
+  50% {
+    left: 150%;
+  }
+  100% {
+    left: 150%;
+  }
 }
 
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
 
+::-webkit-scrollbar-track {
+  background: rgba(1, 14, 19, 0.5);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(10, 92, 114, 0.6);
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(114, 229, 248, 0.6);
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+/* Firefox compatibility */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(10, 92, 114, 0.6) rgba(1, 14, 19, 0.5);
+}

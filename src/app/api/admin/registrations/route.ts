@@ -26,9 +26,11 @@ export async function GET(request: NextRequest) {
     );
 
     return sendSuccess(registrations, "Registrations list retrieved successfully.", requestId);
-
   } catch (error: any) {
-    logger.error({ requestId, error: error.message, stack: error.stack }, "Unhandled error fetching registrations list");
+    logger.error(
+      { requestId, error: error.message, stack: error.stack },
+      "Unhandled error fetching registrations list"
+    );
     return sendError("INTERNAL_SERVER_ERROR", "An unexpected error occurred.", requestId, 500);
   }
 }

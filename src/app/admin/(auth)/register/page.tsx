@@ -31,13 +31,16 @@ export default function AdminRegisterPage() {
       username: "",
       password: "",
       turnstileToken: "",
-    }
+    },
   });
 
-  const onTurnstileVerify = useCallback((token: string) => {
-    setTurnstileToken(token);
-    setValue("turnstileToken", token, { shouldValidate: true });
-  }, [setValue]);
+  const onTurnstileVerify = useCallback(
+    (token: string) => {
+      setTurnstileToken(token);
+      setValue("turnstileToken", token, { shouldValidate: true });
+    },
+    [setValue]
+  );
 
   React.useEffect(() => {
     if (process.env.NODE_ENV === "development") {
@@ -74,7 +77,6 @@ export default function AdminRegisterPage() {
       }
 
       setIsRegistered(true);
-
     } catch (err) {
       console.error(err);
       setServerError("Connection failed. Please check your internet connection.");
@@ -86,7 +88,6 @@ export default function AdminRegisterPage() {
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center justify-center px-4 py-12 relative z-10">
-      
       {/* Brand Header with Logo */}
       <div className="text-center mb-8 flex flex-col items-center">
         <motion.div
@@ -253,7 +254,8 @@ export default function AdminRegisterPage() {
             </h3>
 
             <p className="text-slate-400 text-sm leading-relaxed font-light mb-6">
-              Your registration request has been successfully saved. It is currently <b>PENDING</b> approval by an Admin.
+              Your registration request has been successfully saved. It is currently <b>PENDING</b>{" "}
+              approval by an Admin.
             </p>
 
             <Link

@@ -49,22 +49,18 @@ function SuccessCard() {
         </motion.div>
       </div>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.4 }}
-      >
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}>
         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-[#72E5F8]/30 bg-[#72E5F8]/5 text-[#72E5F8] text-xs font-semibold tracking-wide uppercase mb-3">
           <ShieldCheck className="w-3.5 h-3.5" /> Verified Submission
         </span>
-        
+
         <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight font-heading uppercase">
           Registration Complete!
         </h1>
-        
+
         <p className="text-slate-400 mt-3 text-sm leading-relaxed font-light">
-          Thank you for registering, <span className="text-white font-medium">{name}</span>. 
-          Your seat for the hackX Jr. 9.0 Awareness Session has been successfully reserved.
+          Thank you for registering, <span className="text-white font-medium">{name}</span>. Your
+          seat for the hackX Jr. 9.0 Awareness Session has been successfully reserved.
         </p>
       </motion.div>
 

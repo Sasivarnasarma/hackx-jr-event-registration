@@ -12,7 +12,7 @@ function escapeCsvCell(value: string | null | undefined): string {
   if (value === null || value === undefined) {
     return '""';
   }
-  
+
   let valStr = String(value).trim();
 
   // Escape CSV Formula Injection vulnerabilities
@@ -58,14 +58,19 @@ export async function GET() {
     const csvRows = [headers.join(",")];
 
     for (const r of registrations) {
+      let formattedGrade = r.grade || "";
+      if (formattedGrade && !formattedGrade.startsWith("Grade ") && formattedGrade !== "Other") {
+        formattedGrade = `Grade ${formattedGrade}`;
+      }
+
       const row = [
-        escapeCsvCell(r.id),
+        escapeCsvCell(String(r.id)),
         escapeCsvCell(r.fullName),
         escapeCsvCell(r.mobileNumber),
         escapeCsvCell(r.email),
         escapeCsvCell(r.participantType),
         escapeCsvCell(r.school),
-        escapeCsvCell(r.grade),
+        escapeCsvCell(formattedGrade),
         escapeCsvCell(r.awarenessSource),
         escapeCsvCell(r.createdAt.toISOString()),
       ];
@@ -85,11 +90,10 @@ export async function GET() {
         "Content-Type": "text/csv; charset=utf-8",
         "Content-Disposition": "attachment; filename=hackx_jr_registrations.csv",
         "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
-        "Pragma": "no-cache",
-        "Expires": "0",
+        Pragma: "no-cache",
+        Expires: "0",
       },
     });
-
   } catch (error: any) {
     logger.error({ requestId, error: error.message }, "Error during registrations CSV export");
     return new NextResponse("Internal Server Error", { status: 500 });

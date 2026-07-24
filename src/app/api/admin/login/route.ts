@@ -19,7 +19,9 @@ export async function POST(request: NextRequest) {
     if (!validation.success) {
       const fields = validation.error.flatten().fieldErrors;
       logger.warn({ requestId, fields }, "Admin login validation failed");
-      return sendError("VALIDATION_ERROR", "Username and password are required.", requestId, 422, { fields });
+      return sendError("VALIDATION_ERROR", "Username and password are required.", requestId, 422, {
+        fields,
+      });
     }
 
     const { username, password, turnstileToken } = validation.data;
@@ -29,7 +31,12 @@ export async function POST(request: NextRequest) {
     const turnstileSuccess = await verifyTurnstileToken(turnstileToken, clientIp);
     if (!turnstileSuccess) {
       logger.warn({ requestId, clientIp }, "Admin login Turnstile token verification failed");
-      return sendError("BOT_VERIFICATION_FAILED", "Bot verification failed. Please try again.", requestId, 400);
+      return sendError(
+        "BOT_VERIFICATION_FAILED",
+        "Bot verification failed. Please try again.",
+        requestId,
+        400
+      );
     }
 
     // 2. Fetch admin user
@@ -61,7 +68,10 @@ export async function POST(request: NextRequest) {
     }
 
     if (admin.status === "REJECTED") {
-      logger.warn({ requestId, username: normalizedUsername }, "Login blocked: Account is REJECTED");
+      logger.warn(
+        { requestId, username: normalizedUsername },
+        "Login blocked: Account is REJECTED"
+      );
       return sendError(
         "ACCOUNT_REJECTED",
         "Your account has been rejected. Access is denied.",
@@ -73,7 +83,10 @@ export async function POST(request: NextRequest) {
     // 5. Establish secure session cookies and database session log
     await createSession(admin.id);
 
-    logger.info({ requestId, adminId: admin.id, username: normalizedUsername }, "Admin logged in successfully");
+    logger.info(
+      { requestId, adminId: admin.id, username: normalizedUsername },
+      "Admin logged in successfully"
+    );
 
     return sendSuccess(
       {
@@ -85,9 +98,16 @@ export async function POST(request: NextRequest) {
       "Logged in successfully.",
       requestId
     );
-
   } catch (error: any) {
-    logger.error({ requestId, error: error.message, stack: error.stack }, "Unhandled error during admin login");
-    return sendError("INTERNAL_SERVER_ERROR", "An unexpected error occurred. Please try again.", requestId, 500);
+    logger.error(
+      { requestId, error: error.message, stack: error.stack },
+      "Unhandled error during admin login"
+    );
+    return sendError(
+      "INTERNAL_SERVER_ERROR",
+      "An unexpected error occurred. Please try again.",
+      requestId,
+      500
+    );
   }
 }

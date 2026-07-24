@@ -9,7 +9,9 @@ async function main() {
   const adminPassword = process.env.SUPER_ADMIN_PASSWORD;
 
   if (!adminName || !adminUsername || !adminPassword) {
-    console.error("❌ Seeding failed: SUPER_ADMIN_NAME, SUPER_ADMIN_USERNAME, or SUPER_ADMIN_PASSWORD is not set in environment.");
+    console.error(
+      "❌ Seeding failed: SUPER_ADMIN_NAME, SUPER_ADMIN_USERNAME, or SUPER_ADMIN_PASSWORD is not set in environment."
+    );
     process.exit(1);
   }
 

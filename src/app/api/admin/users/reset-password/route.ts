@@ -19,20 +19,43 @@ export async function POST(request: NextRequest) {
 
     // Only SUPER_ADMIN can trigger password resets
     if (session.user.role !== "SUPER_ADMIN") {
-      logger.warn({ requestId, adminId: session.userId }, "Unauthorized attempt to reset admin password");
-      return sendError("FORBIDDEN", "Only Super Admins can reset password parameters.", requestId, 403);
+      logger.warn(
+        { requestId, adminId: session.userId },
+        "Unauthorized attempt to reset admin password"
+      );
+      return sendError(
+        "FORBIDDEN",
+        "Only Super Admins can reset password parameters.",
+        requestId,
+        403
+      );
     }
 
     const body = await request.json();
     const { userId, newPassword } = body;
 
-    if (!userId || !newPassword || String(newPassword).trim().length < 8) {
-      return sendError("BAD_REQUEST", "User ID and a new password (min 8 chars) are required.", requestId, 400);
+    if (
+      userId === undefined ||
+      userId === null ||
+      !newPassword ||
+      String(newPassword).trim().length < 8
+    ) {
+      return sendError(
+        "BAD_REQUEST",
+        "User ID and a new password (min 8 chars) are required.",
+        requestId,
+        400
+      );
+    }
+
+    const targetId = Number(userId);
+    if (isNaN(targetId)) {
+      return sendError("BAD_REQUEST", "Invalid User ID format.", requestId, 400);
     }
 
     // Verify target user exists
     const targetUser = await db.adminUser.findUnique({
-      where: { id: userId },
+      where: { id: targetId },
       select: { id: true, role: true, username: true },
     });
 
@@ -42,7 +65,12 @@ export async function POST(request: NextRequest) {
 
     // Prevent modifying other super admins
     if (targetUser.role === "SUPER_ADMIN" && targetUser.id !== session.userId) {
-      return sendError("FORBIDDEN", "Super Admins cannot reset passwords of other Super Admins.", requestId, 403);
+      return sendError(
+        "FORBIDDEN",
+        "Super Admins cannot reset passwords of other Super Admins.",
+        requestId,
+        403
+      );
     }
 
     // Hash the new password using Argon2id WASM-backed script
@@ -50,13 +78,13 @@ export async function POST(request: NextRequest) {
 
     // Update password
     await db.adminUser.update({
-      where: { id: userId },
+      where: { id: targetId },
       data: { passwordHash: hashed },
     });
 
     // Revoke all sessions for this user to force re-login
     await db.session.deleteMany({
-      where: { userId },
+      where: { userId: targetId },
     });
 
     logger.info(
@@ -64,8 +92,11 @@ export async function POST(request: NextRequest) {
       "Password reset and sessions revoked for admin user by Super Admin"
     );
 
-    return sendSuccess(null, "Password reset completed successfully. Active sessions revoked.", requestId);
-
+    return sendSuccess(
+      null,
+      "Password reset completed successfully. Active sessions revoked.",
+      requestId
+    );
   } catch (error: any) {
     logger.error({ requestId, error: error.message }, "Error resetting admin user password");
     return sendError("INTERNAL_SERVER_ERROR", "An unexpected error occurred.", requestId, 500);

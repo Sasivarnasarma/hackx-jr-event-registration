@@ -16,7 +16,7 @@ export function Turnstile({ siteKey, onVerify, theme = "dark" }: TurnstileProps)
   const widgetIdRef = useRef<string | null>(null);
 
   const onVerifyRef = useRef(onVerify);
-  
+
   // Keep the ref updated with the latest callback
   useEffect(() => {
     onVerifyRef.current = onVerify;
@@ -43,7 +43,7 @@ export function Turnstile({ siteKey, onVerify, theme = "dark" }: TurnstileProps)
           if (widgetIdRef.current) {
             (window as any).turnstile.remove(widgetIdRef.current);
           }
-          
+
           widgetIdRef.current = (window as any).turnstile.render(containerRef.current, {
             sitekey: siteKey,
             callback: callbackName,
@@ -58,7 +58,7 @@ export function Turnstile({ siteKey, onVerify, theme = "dark" }: TurnstileProps)
     // 4. Dynamically inject Cloudflare Turnstile script
     const scriptId = "cloudflare-turnstile-script";
     let script = document.getElementById(scriptId) as HTMLScriptElement;
-    
+
     if (!script) {
       script = document.createElement("script");
       script.id = scriptId;

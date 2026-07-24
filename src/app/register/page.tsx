@@ -4,20 +4,25 @@ import React, { useState, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  User, 
-  Phone, 
-  Mail, 
-  School, 
-  GraduationCap, 
-  Eye, 
-  ArrowRight, 
+import {
+  User,
+  Phone,
+  Mail,
+  School,
+  GraduationCap,
+  Eye,
+  ArrowRight,
   AlertCircle,
-  Loader2
+  Loader2,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { registrationSchema, type RegistrationInput, gradeOptions, participantTypes } from "@/lib/validation";
+import {
+  registrationSchema,
+  type RegistrationInput,
+  gradeOptions,
+  participantTypes,
+} from "@/lib/validation";
 import { Turnstile } from "@/components/ui/turnstile";
 
 export default function RegisterPage() {
@@ -25,7 +30,7 @@ export default function RegisterPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState<string>("");
   const [serverError, setServerError] = useState<string | null>(null);
-  
+
   // Custom states for tracking conditional selection triggers
   const [selectedPartType, setSelectedPartType] = useState<string>("");
   const [selectedSource, setSelectedSource] = useState<string>("");
@@ -48,13 +53,16 @@ export default function RegisterPage() {
       grade: "",
       awarenessSource: "",
       turnstileToken: "",
-    }
+    },
   });
 
-  const onTurnstileVerify = useCallback((token: string) => {
-    setTurnstileToken(token);
-    setValue("turnstileToken", token, { shouldValidate: true });
-  }, [setValue]);
+  const onTurnstileVerify = useCallback(
+    (token: string) => {
+      setTurnstileToken(token);
+      setValue("turnstileToken", token, { shouldValidate: true });
+    },
+    [setValue]
+  );
 
   React.useEffect(() => {
     if (process.env.NODE_ENV === "development") {
@@ -70,9 +78,9 @@ export default function RegisterPage() {
     let payload = { ...data };
     if (selectedSource === "Other") {
       if (!customSource.trim()) {
-        setError("awarenessSource", { 
-          type: "manual", 
-          message: "Please specify how you heard about the session" 
+        setError("awarenessSource", {
+          type: "manual",
+          message: "Please specify how you heard about the session",
         });
         setIsSubmitting(false);
         return;
@@ -107,7 +115,6 @@ export default function RegisterPage() {
       }
 
       router.push(`/registration-success?name=${encodeURIComponent(data.fullName)}`);
-
     } catch (err) {
       console.error(err);
       setServerError("Connection failed. Please check your internet connection.");
@@ -119,7 +126,6 @@ export default function RegisterPage() {
 
   return (
     <div className="w-full max-w-2xl mx-auto px-4 py-8 relative z-10">
-      
       {/* Brand Header with Logo only */}
       <div className="text-center mb-8 flex flex-col items-center">
         <motion.div
@@ -239,16 +245,18 @@ export default function RegisterPage() {
                   onChange: (e) => {
                     setSelectedPartType(e.target.value);
                     if (e.target.value !== "STUDENT") {
-                      setValue("grade", ""); 
+                      setValue("grade", "");
                     }
-                  }
+                  },
                 })}
                 className={`w-full px-4 py-3 rounded-xl glass-select outline-none text-sm ${
                   errors.participantType ? "border-red-500/50 focus:border-red-500" : ""
                 }`}
                 defaultValue=""
               >
-                <option value="" disabled>Select Type</option>
+                <option value="" disabled>
+                  Select Type
+                </option>
                 {participantTypes.map((type) => (
                   <option key={type} value={type}>
                     {type.charAt(0) + type.slice(1).toLowerCase()}
@@ -308,9 +316,13 @@ export default function RegisterPage() {
                   }`}
                   defaultValue=""
                 >
-                  <option value="" disabled>Select Grade</option>
+                  <option value="" disabled>
+                    Select Grade
+                  </option>
                   {gradeOptions.map((grade) => (
-                    <option key={grade} value={grade}>{grade}</option>
+                    <option key={grade} value={grade}>
+                      {grade}
+                    </option>
                   ))}
                 </select>
                 {errors.grade && (
@@ -328,20 +340,23 @@ export default function RegisterPage() {
             <div className="space-y-2">
               <label className="text-xs font-bold tracking-wider text-slate-300 uppercase flex items-center gap-2">
                 <Eye className="w-4 h-4 text-[#72E5F8]" />
-                How did you hear about this session? <span className="text-slate-500 text-[10px]">(Optional)</span>
+                How did you hear about this session?{" "}
+                <span className="text-slate-500 text-[10px]">(Optional)</span>
               </label>
               <select
                 {...register("awarenessSource", {
                   onChange: (e) => {
                     setSelectedSource(e.target.value);
-                  }
+                  },
                 })}
                 className={`w-full px-4 py-3 rounded-xl glass-select outline-none text-sm ${
                   errors.awarenessSource ? "border-red-500/50 focus:border-red-500" : ""
                 }`}
                 defaultValue=""
               >
-                <option value="" disabled>Select Source (Optional)</option>
+                <option value="" disabled>
+                  Select Source (Optional)
+                </option>
                 <option value="School">School</option>
                 <option value="Teacher">Teacher</option>
                 <option value="Friend">Friend</option>

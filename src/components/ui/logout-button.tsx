@@ -32,11 +32,7 @@ export function LogoutButton() {
       disabled={isLoggingOut}
       className="flex items-center gap-2 px-4 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 hover:text-white transition-all text-xs font-semibold cursor-pointer disabled:opacity-50"
     >
-      {isLoggingOut ? (
-        <Loader2 className="w-4 h-4 animate-spin" />
-      ) : (
-        <LogOut className="w-4 h-4" />
-      )}
+      {isLoggingOut ? <Loader2 className="w-4 h-4 animate-spin" /> : <LogOut className="w-4 h-4" />}
       Log Out
     </button>
   );

@@ -20,8 +20,16 @@ export const viewport = {
 
 export const metadata: Metadata = {
   title: "hackX Jr. 9.0 | Awareness Session Registration",
-  description: "Secure registration platform for the hackX Jr. 9.0 Awareness Session. Secure your spot in the premier junior hackathon awareness event.",
-  keywords: ["hackX", "hackX Jr", "Kelaniya University", "Awareness Session", "Registration", "Junior Hackathon"],
+  description:
+    "Secure registration platform for the hackX Jr. 9.0 Awareness Session. Secure your spot in the premier junior hackathon awareness event.",
+  keywords: [
+    "hackX",
+    "hackX Jr",
+    "Kelaniya University",
+    "Awareness Session",
+    "Registration",
+    "Junior Hackathon",
+  ],
   authors: [{ name: "hackX Jr. Team" }],
   icons: {
     icon: "/Logos/x-logo-favicon.png",
@@ -34,15 +42,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-[#010E13] text-[#f0f4ff] font-sans antialiased">
         <main className="flex-grow flex flex-col justify-center relative">
           {/* Ocean particles background */}
           <OceanBackground />
-          
+
           {children}
         </main>
       </body>

@@ -12,7 +12,11 @@ export function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
 
   // Protect all /admin routes except for /admin/login and /admin/register
-  if (path.startsWith("/admin") && !path.startsWith("/admin/login") && !path.startsWith("/admin/register")) {
+  if (
+    path.startsWith("/admin") &&
+    !path.startsWith("/admin/login") &&
+    !path.startsWith("/admin/register")
+  ) {
     const sessionToken = request.cookies.get(SESSION_COOKIE_NAME)?.value;
 
     if (!sessionToken) {

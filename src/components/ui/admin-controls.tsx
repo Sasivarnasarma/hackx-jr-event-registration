@@ -15,12 +15,12 @@ import {
   Loader2,
   CheckCircle2,
   Lock,
-  ArrowUpDown
+  ArrowUpDown,
 } from "lucide-react";
 import { LogoutButton } from "./logout-button";
 
 interface Registration {
-  id: string;
+  id: number;
   fullName: string;
   mobileNumber: string;
   email: string | null;
@@ -32,7 +32,7 @@ interface Registration {
 }
 
 interface AdminUser {
-  id: string;
+  id: number;
   fullName: string;
   username: string;
   status: string;
@@ -44,7 +44,7 @@ interface AdminControlsProps {
   initialRegistrations: Registration[];
   initialAdmins: AdminUser[];
   currentAdmin: {
-    id: string;
+    id: number;
     fullName: string;
     username: string;
     role: string;
@@ -54,7 +54,7 @@ interface AdminControlsProps {
 export function AdminControls({
   initialRegistrations,
   initialAdmins,
-  currentAdmin
+  currentAdmin,
 }: AdminControlsProps) {
   const [registrations, setRegistrations] = useState<Registration[]>(initialRegistrations);
   const [admins, setAdmins] = useState<AdminUser[]>(initialAdmins);
@@ -67,28 +67,31 @@ export function AdminControls({
   const [sortBy, setSortBy] = useState<string>("date_desc");
 
   // Reset Password state
-  const [resetPasswordId, setResetPasswordId] = useState<string | null>(null);
+  const [resetPasswordId, setResetPasswordId] = useState<number | null>(null);
   const [newPassword, setNewPassword] = useState("");
   const [resetLoading, setResetLoading] = useState(false);
   const [resetSuccessMsg, setResetSuccessMsg] = useState<string | null>(null);
 
   // Action loading states
-  const [actionUserId, setActionUserId] = useState<string | null>(null);
+  const [actionUserId, setActionUserId] = useState<number | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [exporting, setExporting] = useState(false);
 
   // Compute Statistics
   const totalRegistrations = registrations.length;
-  const studentCount = registrations.filter(r => r.participantType === "STUDENT").length;
-  const teacherCount = registrations.filter(r => r.participantType === "TEACHER").length;
-  const principalCount = registrations.filter(r => r.participantType === "PRINCIPAL").length;
+  const studentCount = registrations.filter((r) => r.participantType === "STUDENT").length;
+  const teacherCount = registrations.filter((r) => r.participantType === "TEACHER").length;
+  const principalCount = registrations.filter((r) => r.participantType === "PRINCIPAL").length;
 
-  const studentPercentage = totalRegistrations > 0 ? Math.round((studentCount / totalRegistrations) * 100) : 0;
-  const teacherPercentage = totalRegistrations > 0 ? Math.round((teacherCount / totalRegistrations) * 100) : 0;
-  const principalPercentage = totalRegistrations > 0 ? Math.round((principalCount / totalRegistrations) * 100) : 0;
+  const studentPercentage =
+    totalRegistrations > 0 ? Math.round((studentCount / totalRegistrations) * 100) : 0;
+  const teacherPercentage =
+    totalRegistrations > 0 ? Math.round((teacherCount / totalRegistrations) * 100) : 0;
+  const principalPercentage =
+    totalRegistrations > 0 ? Math.round((principalCount / totalRegistrations) * 100) : 0;
 
   // Extract unique schools
-  const uniqueSchools = Array.from(new Set(registrations.map(r => r.school))).sort();
+  const uniqueSchools = Array.from(new Set(registrations.map((r) => r.school))).sort();
 
   // Search & Filter handler
   const filteredRegistrations = registrations.filter((r) => {
@@ -106,8 +109,10 @@ export function AdminControls({
 
   // Sorting logic
   const sortedRegistrations = [...filteredRegistrations].sort((a, b) => {
-    if (sortBy === "date_desc") return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    if (sortBy === "date_asc") return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+    if (sortBy === "date_desc")
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    if (sortBy === "date_asc")
+      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
     if (sortBy === "name_asc") return a.fullName.localeCompare(b.fullName);
     if (sortBy === "name_desc") return b.fullName.localeCompare(a.fullName);
     if (sortBy === "school_asc") return a.school.localeCompare(b.school);
@@ -116,7 +121,7 @@ export function AdminControls({
   });
 
   // Admin Status Update Handler
-  const handleStatusChange = async (userId: string, status: string) => {
+  const handleStatusChange = async (userId: number, status: string) => {
     setActionUserId(userId);
     setActionError(null);
 
@@ -137,9 +142,8 @@ export function AdminControls({
 
       // Update local state immediately
       setAdmins((prev) =>
-        prev.map((u) => u.id === userId ? { ...u, status: result.data.status } : u)
+        prev.map((u) => (u.id === userId ? { ...u, status: result.data.status } : u))
       );
-
     } catch (err) {
       console.error(err);
       setActionError("Connection failed. Please check your internet connection.");
@@ -182,7 +186,6 @@ export function AdminControls({
           setResetSuccessMsg(null);
         }, 3000);
       }
-
     } catch (err) {
       console.error(err);
       setActionError("Connection failed. Please check your connection.");
@@ -202,7 +205,6 @@ export function AdminControls({
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4 py-8 z-10 relative">
-
       {/* Header Bar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-800 pb-6 mb-8 gap-4">
         <div>
@@ -228,8 +230,12 @@ export function AdminControls({
           <div className="absolute right-4 top-4 opacity-10 text-[#72E5F8]">
             <Users className="w-12 h-12" />
           </div>
-          <div className="text-slate-400 text-xs font-bold uppercase tracking-wider">Total Registrations</div>
-          <div className="text-3xl font-black text-white mt-2 font-heading">{totalRegistrations}</div>
+          <div className="text-slate-400 text-xs font-bold uppercase tracking-wider">
+            Total Registrations
+          </div>
+          <div className="text-3xl font-black text-white mt-2 font-heading">
+            {totalRegistrations}
+          </div>
           <div className="text-[10px] text-slate-500 mt-1.5">Confirmed check-in counts</div>
         </div>
 
@@ -240,7 +246,9 @@ export function AdminControls({
           </div>
           <div className="text-slate-400 text-xs font-bold uppercase tracking-wider">Students</div>
           <div className="text-3xl font-black text-white mt-2 font-heading">{studentCount}</div>
-          <div className="text-[10px] text-cyan-400 font-semibold mt-1.5">{studentPercentage}% of total</div>
+          <div className="text-[10px] text-cyan-400 font-semibold mt-1.5">
+            {studentPercentage}% of total
+          </div>
         </div>
 
         {/* Teacher Registrations */}
@@ -250,7 +258,9 @@ export function AdminControls({
           </div>
           <div className="text-slate-400 text-xs font-bold uppercase tracking-wider">Teachers</div>
           <div className="text-3xl font-black text-white mt-2 font-heading">{teacherCount}</div>
-          <div className="text-[10px] text-amber-400 font-semibold mt-1.5">{teacherPercentage}% of total</div>
+          <div className="text-[10px] text-amber-400 font-semibold mt-1.5">
+            {teacherPercentage}% of total
+          </div>
         </div>
 
         {/* Principal Registrations */}
@@ -258,9 +268,13 @@ export function AdminControls({
           <div className="absolute right-4 top-4 opacity-10 text-indigo-400">
             <ShieldAlert className="w-12 h-12" />
           </div>
-          <div className="text-slate-400 text-xs font-bold uppercase tracking-wider">Principals</div>
+          <div className="text-slate-400 text-xs font-bold uppercase tracking-wider">
+            Principals
+          </div>
           <div className="text-3xl font-black text-white mt-2 font-heading">{principalCount}</div>
-          <div className="text-[10px] text-indigo-400 font-semibold mt-1.5">{principalPercentage}% of total</div>
+          <div className="text-[10px] text-indigo-400 font-semibold mt-1.5">
+            {principalPercentage}% of total
+          </div>
         </div>
       </div>
 
@@ -269,10 +283,11 @@ export function AdminControls({
         <div className="flex border-b border-slate-800 mb-6 gap-2">
           <button
             onClick={() => setActiveTab("registrations")}
-            className={`px-5 py-3 text-xs font-bold uppercase tracking-wider transition-all border-b-2 cursor-pointer flex items-center gap-2 ${activeTab === "registrations"
+            className={`px-5 py-3 text-xs font-bold uppercase tracking-wider transition-all border-b-2 cursor-pointer flex items-center gap-2 ${
+              activeTab === "registrations"
                 ? "border-[#72E5F8] text-[#72E5F8] bg-[#72E5F8]/5"
                 : "border-transparent text-slate-400 hover:text-white"
-              }`}
+            }`}
           >
             <Users className="w-4 h-4" />
             Registrations ({registrations.length})
@@ -280,10 +295,11 @@ export function AdminControls({
 
           <button
             onClick={() => setActiveTab("admins")}
-            className={`px-5 py-3 text-xs font-bold uppercase tracking-wider transition-all border-b-2 cursor-pointer flex items-center gap-2 ${activeTab === "admins"
+            className={`px-5 py-3 text-xs font-bold uppercase tracking-wider transition-all border-b-2 cursor-pointer flex items-center gap-2 ${
+              activeTab === "admins"
                 ? "border-[#72E5F8] text-[#72E5F8] bg-[#72E5F8]/5"
                 : "border-transparent text-slate-400 hover:text-white"
-              }`}
+            }`}
           >
             <ShieldAlert className="w-4 h-4" />
             Admins Portal ({admins.length})
@@ -294,7 +310,6 @@ export function AdminControls({
       {/* Registrations View */}
       {activeTab === "registrations" && (
         <div className="space-y-6">
-
           {/* Filters Bar */}
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 bg-slate-900/30 p-4 rounded-2xl border border-slate-800/40 backdrop-blur-sm">
             {/* Search Input */}
@@ -331,7 +346,9 @@ export function AdminControls({
               >
                 <option value="ALL">All Schools</option>
                 {uniqueSchools.map((school) => (
-                  <option key={school} value={school}>{school}</option>
+                  <option key={school} value={school}>
+                    {school}
+                  </option>
                 ))}
               </select>
             </div>
@@ -372,10 +389,11 @@ export function AdminControls({
 
           {/* Table Container */}
           <div className="glass-panel rounded-3xl overflow-hidden shadow-2xl border border-slate-800/50">
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto max-h-[60vh] overflow-y-auto relative">
               <table className="w-full border-collapse text-left text-xs">
-                <thead>
+                <thead className="sticky top-0 bg-[#052E3F]/95 backdrop-blur-md z-10 border-b border-slate-800">
                   <tr className="border-b border-slate-800 bg-slate-900/40 text-slate-400 font-bold uppercase tracking-wider">
+                    <th className="px-6 py-4">ID</th>
                     <th className="px-6 py-4">Full Name</th>
                     <th className="px-6 py-4">Mobile</th>
                     <th className="px-6 py-4">Email</th>
@@ -390,24 +408,29 @@ export function AdminControls({
                   {sortedRegistrations.length > 0 ? (
                     sortedRegistrations.map((r) => (
                       <tr key={r.id} className="hover:bg-slate-950/20 transition-all">
+                        <td className="px-6 py-4 font-mono font-semibold text-slate-400">{r.id}</td>
                         <td className="px-6 py-4 font-semibold text-white">{r.fullName}</td>
                         <td className="px-6 py-4 font-mono">{r.mobileNumber}</td>
-                        <td className="px-6 py-4">{r.email || <span className="text-slate-600">—</span>}</td>
                         <td className="px-6 py-4">
-                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${r.participantType === "STUDENT" ? "bg-cyan-500/10 text-cyan-400" :
-                              r.participantType === "TEACHER" ? "bg-amber-500/10 text-amber-400" :
-                                "bg-indigo-500/10 text-indigo-400"
-                            }`}>
+                          {r.email || <span className="text-slate-600">—</span>}
+                        </td>
+                        <td className="px-6 py-4">
+                          <span
+                            className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                              r.participantType === "STUDENT"
+                                ? "bg-cyan-500/10 text-cyan-400"
+                                : r.participantType === "TEACHER"
+                                  ? "bg-amber-500/10 text-amber-400"
+                                  : "bg-indigo-500/10 text-indigo-400"
+                            }`}
+                          >
                             {r.participantType}
                           </span>
                         </td>
                         <td className="px-6 py-4">{r.school}</td>
-                        <td className="px-6 py-4 font-medium">
+                        <td className="px-6 py-4 font-semibold">
                           {r.grade ? (
-                            <span className="flex items-center gap-1">
-                              <GraduationCap className="w-3.5 h-3.5 text-[#72E5F8]" />
-                              {r.grade}
-                            </span>
+                            r.grade.replace("Grade ", "")
                           ) : (
                             <span className="text-slate-600">—</span>
                           )}
@@ -420,7 +443,7 @@ export function AdminControls({
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={8} className="px-6 py-12 text-center text-slate-500">
+                      <td colSpan={9} className="px-6 py-12 text-center text-slate-500">
                         <FileText className="w-10 h-10 mx-auto opacity-30 mb-2" />
                         No registrations match the query criteria.
                       </td>
@@ -451,9 +474,9 @@ export function AdminControls({
           )}
 
           <div className="glass-panel rounded-3xl overflow-hidden shadow-2xl border border-slate-800/50">
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto max-h-[60vh] overflow-y-auto relative">
               <table className="w-full border-collapse text-left text-xs">
-                <thead>
+                <thead className="sticky top-0 bg-[#052E3F]/95 backdrop-blur-md z-10 border-b border-slate-800">
                   <tr className="border-b border-slate-800 bg-slate-900/40 text-slate-400 font-bold uppercase tracking-wider">
                     <th className="px-6 py-4">Full Name</th>
                     <th className="px-6 py-4">Username</th>
@@ -472,10 +495,15 @@ export function AdminControls({
                           {admin.role}
                         </td>
                         <td className="px-6 py-4">
-                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${admin.status === "APPROVED" ? "bg-green-500/10 text-green-400" :
-                              admin.status === "REJECTED" ? "bg-red-500/10 text-red-400" :
-                                "bg-amber-500/10 text-amber-400"
-                            }`}>
+                          <span
+                            className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
+                              admin.status === "APPROVED"
+                                ? "bg-green-500/10 text-green-400"
+                                : admin.status === "REJECTED"
+                                  ? "bg-red-500/10 text-red-400"
+                                  : "bg-amber-500/10 text-amber-400"
+                            }`}
+                          >
                             {admin.status}
                           </span>
                         </td>
@@ -483,7 +511,10 @@ export function AdminControls({
                           <div className="flex items-center justify-end gap-2 flex-wrap">
                             {/* Reset Password Form Section */}
                             {resetPasswordId === admin.id ? (
-                              <form onSubmit={handlePasswordReset} className="flex items-center gap-1 bg-slate-900/50 p-1 rounded-xl border border-slate-800">
+                              <form
+                                onSubmit={handlePasswordReset}
+                                className="flex items-center gap-1 bg-slate-900/50 p-1 rounded-xl border border-slate-800"
+                              >
                                 <input
                                   type="password"
                                   placeholder="New Password (min 8)"

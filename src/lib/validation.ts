@@ -13,12 +13,12 @@ export function normalizeSpaces(str: string): string {
  */
 export function normalizeMobileNumber(phone: string): string | null {
   const clean = phone.replace(/[\s\-\(\)\+]/g, ""); // Remove all whitespace, hyphens, brackets, pluses
-  
+
   // If it was +947XXXXXXXX, clean will be 947XXXXXXXX (11 digits)
   if (/^947[01245678]\d{7}$/.test(clean)) {
     return `+${clean}`;
   }
-  
+
   // If it was 07XXXXXXXX, clean will be 07XXXXXXXX (10 digits)
   if (/^07[01245678]\d{7}$/.test(clean)) {
     return `+94${clean.slice(1)}`;
@@ -49,7 +49,7 @@ export const gradeOptions = [
   "Grade 11",
   "Grade 12",
   "Grade 13",
-  "Other"
+  "Other",
 ] as const;
 
 /**
@@ -70,11 +70,7 @@ export const registrationSchema = z
       .refine((val) => normalizeMobileNumber(val) !== null, {
         message: "Please enter a valid Sri Lankan mobile number (e.g. 0771234567)",
       }),
-    email: z
-      .string()
-      .email("Please enter a valid email address")
-      .optional()
-      .or(z.literal("")),
+    email: z.string().email("Please enter a valid email address").optional().or(z.literal("")),
     participantType: z.enum(participantTypes, {
       errorMap: () => ({ message: "Please select a valid participant type" }),
     }),
@@ -83,10 +79,7 @@ export const registrationSchema = z
       .min(3, "School name must be at least 3 characters")
       .max(150, "School name cannot exceed 150 characters"),
     grade: z.string().optional().or(z.null()),
-    awarenessSource: z
-      .string()
-      .optional()
-      .or(z.literal("")),
+    awarenessSource: z.string().optional().or(z.literal("")),
     turnstileToken: z.string().min(1, "Bot verification is required"),
   })
   .refine(
@@ -117,13 +110,22 @@ export const registrationSchema = z
 export type RegistrationInput = z.infer<typeof registrationSchema>;
 
 export const adminRegisterSchema = z.object({
-  fullName: z.string().min(2, "Full name must be at least 2 characters").max(100, "Full name is too long"),
+  fullName: z
+    .string()
+    .min(2, "Full name must be at least 2 characters")
+    .max(100, "Full name is too long"),
   username: z
     .string()
     .min(3, "Username must be at least 3 characters")
     .max(30, "Username is too long")
-    .regex(/^[a-zA-Z0-9_\-]+$/, "Username can only contain alphanumeric characters, underscores, and hyphens"),
-  password: z.string().min(8, "Password must be at least 8 characters").max(100, "Password is too long"),
+    .regex(
+      /^[a-zA-Z0-9_\-]+$/,
+      "Username can only contain alphanumeric characters, underscores, and hyphens"
+    ),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .max(100, "Password is too long"),
   turnstileToken: z.string().min(1, "Bot verification is required"),
 });
 
@@ -136,4 +138,3 @@ export const adminLoginSchema = z.object({
 });
 
 export type AdminLoginInput = z.infer<typeof adminLoginSchema>;
-

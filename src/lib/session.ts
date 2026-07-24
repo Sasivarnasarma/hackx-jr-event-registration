@@ -18,7 +18,7 @@ export function hashToken(token: string): string {
  * Creates a new session in the database for the given user,
  * and sets the session token in an HttpOnly cookie.
  */
-export async function createSession(userId: string): Promise<string> {
+export async function createSession(userId: number): Promise<string> {
   const rawToken = crypto.randomBytes(32).toString("hex");
   const hashedToken = hashToken(rawToken);
   const expiresAt = new Date(Date.now() + SESSION_DURATION_MS);
@@ -49,7 +49,11 @@ export async function createSession(userId: string): Promise<string> {
  * Verifies the session token cookie against the database.
  * Returns the session and user details if valid, or null otherwise.
  */
-export async function verifySession(): Promise<{ id: string; userId: string; user: AdminUser } | null> {
+export async function verifySession(): Promise<{
+  id: string;
+  userId: number;
+  user: AdminUser;
+} | null> {
   const cookieStore = await cookies();
   const rawToken = cookieStore.get(SESSION_COOKIE_NAME)?.value;
 
@@ -89,10 +93,12 @@ export async function verifySession(): Promise<{ id: string; userId: string; use
     const threeDaysMs = 3 * 24 * 60 * 60 * 1000;
     if (session.expiresAt.getTime() - Date.now() < threeDaysMs) {
       const newExpiresAt = new Date(Date.now() + SESSION_DURATION_MS);
-      await db.session.update({
-        where: { id: session.id },
-        data: { expiresAt: newExpiresAt },
-      }).catch(() => {});
+      await db.session
+        .update({
+          where: { id: session.id },
+          data: { expiresAt: newExpiresAt },
+        })
+        .catch(() => {});
     }
 
     return session;
