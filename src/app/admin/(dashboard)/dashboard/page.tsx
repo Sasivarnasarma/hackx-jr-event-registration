@@ -57,7 +57,7 @@ export default async function AdminDashboardPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#010E13]">
+    <main className="min-h-screen">
       <AdminControls
         initialRegistrations={serializedRegistrations}
         initialAdmins={serializedAllAdmins}

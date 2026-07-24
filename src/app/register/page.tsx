@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "framer-motion";
@@ -34,6 +34,35 @@ export default function RegisterPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState<string>("");
   const [serverError, setServerError] = useState<string | null>(null);
+
+  // Countdown Timer Logic
+  const [mounted, setMounted] = useState(false);
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+
+  useEffect(() => {
+    setMounted(true);
+    const target = new Date("2026-08-01T09:00:00");
+
+    const calculate = () => {
+      const difference = +target - +new Date();
+      if (difference <= 0) {
+        return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+      }
+      return {
+        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+        minutes: Math.floor((difference / 1000 / 60) % 60),
+        seconds: Math.floor((difference / 1000) % 60),
+      };
+    };
+
+    setTimeLeft(calculate());
+    const timer = setInterval(() => {
+      setTimeLeft(calculate());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   // Spotlight mouse effect position
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -205,6 +234,15 @@ export default function RegisterPage() {
           className="glass-panel order-2 lg:order-1 lg:col-span-8 rounded-3xl p-6 md:p-10 relative overflow-hidden h-full flex flex-col"
         >
           <div className="mouse-spotlight" />
+
+          <div className="mb-6 relative z-10">
+            <h2 className="text-xl md:text-2xl font-black font-heading text-white tracking-wide uppercase bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-100 to-[#72E5F8]">
+              Reserve Your Spot
+            </h2>
+            <p className="text-xs text-slate-400 mt-1 font-light">
+              Fill out the details below to complete your registration.
+            </p>
+          </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 relative z-10" noValidate>
             {serverError && (
@@ -508,6 +546,52 @@ export default function RegisterPage() {
                 groundbreaking technology solutions and succeed in the competition.
               </p>
             </div>
+
+            {/* Event Countdown Timer */}
+            {mounted && (
+              <div className="space-y-2 pt-2">
+                <span className="text-[10px] text-slate-500 uppercase tracking-widest block text-center font-bold">
+                  Event Starts In
+                </span>
+                <div className="grid grid-cols-4 gap-2">
+                  <div className="bg-[#052E3F]/40 border border-white/5 rounded-2xl p-3 text-center flex flex-col items-center justify-center">
+                    <span className="text-xl font-heading font-black text-[#72E5F8] tracking-tight">
+                      {String(timeLeft.days).padStart(2, "0")}
+                    </span>
+                    <span className="text-[8px] uppercase tracking-wide text-slate-400 font-bold mt-0.5">
+                      Days
+                    </span>
+                  </div>
+
+                  <div className="bg-[#052E3F]/40 border border-white/5 rounded-2xl p-3 text-center flex flex-col items-center justify-center">
+                    <span className="text-xl font-heading font-black text-[#72E5F8] tracking-tight">
+                      {String(timeLeft.hours).padStart(2, "0")}
+                    </span>
+                    <span className="text-[8px] uppercase tracking-wide text-slate-400 font-bold mt-0.5">
+                      Hours
+                    </span>
+                  </div>
+
+                  <div className="bg-[#052E3F]/40 border border-white/5 rounded-2xl p-3 text-center flex flex-col items-center justify-center">
+                    <span className="text-xl font-heading font-black text-[#72E5F8] tracking-tight">
+                      {String(timeLeft.minutes).padStart(2, "0")}
+                    </span>
+                    <span className="text-[8px] uppercase tracking-wide text-slate-400 font-bold mt-0.5">
+                      Mins
+                    </span>
+                  </div>
+
+                  <div className="bg-[#052E3F]/40 border border-white/5 rounded-2xl p-3 text-center flex flex-col items-center justify-center relative overflow-hidden group">
+                    <span className="text-xl font-heading font-black text-[#72E5F8] tracking-tight">
+                      {String(timeLeft.seconds).padStart(2, "0")}
+                    </span>
+                    <span className="text-[8px] uppercase tracking-wide text-slate-400 font-bold mt-0.5">
+                      Secs
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Event Details Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-b border-white/5 py-4 text-center">
