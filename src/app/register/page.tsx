@@ -594,7 +594,7 @@ export default function RegisterPage() {
             )}
 
             {/* Event Details Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-b border-white/5 py-4 text-center">
+            <div className="grid grid-cols-3 gap-2 pt-2 border-t border-b border-white/5 py-4 text-center">
               <div className="flex flex-col items-center gap-2">
                 <div className="w-8 h-8 rounded-lg bg-[#052E3F] border border-[#72E5F8]/20 flex items-center justify-center flex-shrink-0">
                   <Calendar className="w-4 h-4 text-[#72E5F8]" />
