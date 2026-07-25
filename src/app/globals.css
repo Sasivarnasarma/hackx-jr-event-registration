@@ -83,12 +83,12 @@
 
 :root {
   color-scheme: dark;
-  /* Brand Palette */
-  --color-void: #010814;
-  --color-deep-space: #041a3a;
-  --color-horizon: #0a3878;
-  --color-electric: #1a6fd4;
-  --color-arc: #5bb8ff;
+  /* hackX Jr. Brand Palette */
+  --color-void: #010E13;
+  --color-deep-space: #052E3F;
+  --color-horizon: #0A5C72;
+  --color-electric: #18A0C0;
+  --color-arc: #72E5F8;
 
   /* Semantic Aliases */
   --color-bg-deep: var(--color-void);
@@ -97,13 +97,13 @@
   --color-text-muted: #8ba3c7;
   --color-accent: var(--color-electric);
   --color-accent-light: var(--color-arc);
-  --color-accent-glow: rgba(91, 184, 255, 0.4);
-  --color-accent-dark: #1058a8;
+  --color-accent-glow: rgba(114, 229, 248, 0.4);
+  --color-accent-dark: #0A5C72;
 
   /* Liquid Glass / Card */
-  --glass-bg: rgba(1, 8, 20, 0.45);
+  --glass-bg: rgba(5, 46, 63, 0.45);
   --glass-border: rgba(255, 255, 255, 0.07);
-  --glass-border-hover: rgba(91, 184, 255, 0.25);
+  --glass-border-hover: rgba(114, 229, 248, 0.25);
 
   /* Fonts */
   --font-heading: "TT Hoves Pro Expanded", "TT Hoves Pro", system-ui, sans-serif;
@@ -326,7 +326,7 @@ body::before {
   z-index: 0;
   background-image: radial-gradient(
     800px circle at var(--mouse-x, 0) var(--mouse-y, 0),
-    rgba(91, 184, 255, 0.08),
+    rgba(114, 229, 248, 0.08),
     transparent 40%
   );
   transition: opacity 0.3s;
@@ -334,7 +334,7 @@ body::before {
 
 /* ── Buttons ───────────────────────────────────────────────── */
 .btn-primary {
-  background: linear-gradient(135deg, #1a6fd4 0%, #5bb8ff 60%, #1a6fd4 100%);
+  background: linear-gradient(135deg, #0A5C72 0%, #18A0C0 60%, #0A5C72 100%);
   background-size: 200% 200%;
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -375,7 +375,7 @@ body::before {
 
 .btn-primary:hover:not(:disabled) {
   transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 10px 30px rgba(91, 184, 255, 0.45);
+  box-shadow: 0 10px 30px rgba(114, 229, 248, 0.35);
   border-color: rgba(255, 255, 255, 0.4);
 }
 
@@ -393,12 +393,12 @@ body::before {
   0%,
   100% {
     box-shadow:
-      0 0 20px rgba(26, 111, 212, 0.35),
+      0 0 20px rgba(24, 160, 192, 0.35),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
   50% {
     box-shadow:
-      0 0 35px rgba(91, 184, 255, 0.6),
+      0 0 35px rgba(114, 229, 248, 0.6),
       inset 0 1px 0 rgba(255, 255, 255, 0.4);
   }
 }
