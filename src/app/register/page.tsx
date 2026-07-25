@@ -658,7 +658,7 @@ export default function RegisterPage() {
 
           <div className="pt-4 border-t border-white/10 text-center">
             <p className="text-[10px] text-[#8ba3c7] uppercase tracking-wider font-semibold">
-              Organized by Industrial Management Science Students' Association
+              Organized by the Industrial Management Science Students' Association
             </p>
             <p className="text-[9px] text-slate-500 mt-1">
               Faculty of Science, University of Kelaniya
