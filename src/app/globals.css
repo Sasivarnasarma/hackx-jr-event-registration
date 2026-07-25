@@ -1,24 +1,10 @@
 @import "tailwindcss";
 
-/* ── TT Hoves Pro — Body ── */
-@font-face {
-  font-family: "TT Hoves Pro";
-  src: url("/fonts/TT Hoves Pro Trial Light.ttf") format("truetype");
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
+/* ── TT Hoves Pro — Essential Fonts ── */
 @font-face {
   font-family: "TT Hoves Pro";
   src: url("/fonts/TT Hoves Pro Trial Regular.ttf") format("truetype");
   font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "TT Hoves Pro";
-  src: url("/fonts/TT Hoves Pro Trial Medium.ttf") format("truetype");
-  font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
@@ -30,53 +16,9 @@
   font-display: swap;
 }
 @font-face {
-  font-family: "TT Hoves Pro";
-  src: url("/fonts/TT Hoves Pro Trial ExtraBold.ttf") format("truetype");
-  font-weight: 800;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "TT Hoves Pro";
-  src: url("/fonts/TT Hoves Pro Trial Black.ttf") format("truetype");
-  font-weight: 900;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* ── TT Hoves Pro Expanded — Display ── */
-@font-face {
-  font-family: "TT Hoves Pro Expanded";
-  src: url("/fonts/TT Hoves Pro Trial Expanded Regular.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "TT Hoves Pro Expanded";
-  src: url("/fonts/TT Hoves Pro Trial Expanded Medium.ttf") format("truetype");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
   font-family: "TT Hoves Pro Expanded";
   src: url("/fonts/TT Hoves Pro Trial Expanded Bold.ttf") format("truetype");
   font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "TT Hoves Pro Expanded";
-  src: url("/fonts/TT Hoves Pro Trial Expanded ExtraBold.ttf") format("truetype");
-  font-weight: 800;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "TT Hoves Pro Expanded";
-  src: url("/fonts/TT Hoves Pro Trial Expanded Black.ttf") format("truetype");
-  font-weight: 900;
   font-style: normal;
   font-display: swap;
 }
