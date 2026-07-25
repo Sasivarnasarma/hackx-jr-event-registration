@@ -211,9 +211,10 @@ export default function RegisterPage() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="text-xs md:text-sm font-semibold tracking-widest text-[#8ba3c7] uppercase"
+          className="text-xs md:text-sm font-semibold tracking-widest text-[#8ba3c7] uppercase text-center leading-relaxed"
         >
-          Inter-School Innovation Competition — Awareness Session
+          INTER-SCHOOL INNOVATION COMPETITION<br />
+          AWARENESS SESSION
         </motion.p>
       </div>
 
@@ -259,8 +260,8 @@ export default function RegisterPage() {
             {/* Full Name */}
             <div className="space-y-2">
               <label className="text-xs font-bold tracking-wider text-slate-300 uppercase flex items-center gap-2">
-                <User className="w-4 h-4 text-[#5BB8FF]" />
-                Full Name <span className="text-[#5BB8FF]">*</span>
+                <User className="w-4 h-4 text-[#72E5F8]" />
+                Full Name <span className="text-[#72E5F8]">*</span>
               </label>
               <input
                 type="text"
@@ -284,8 +285,8 @@ export default function RegisterPage() {
               {/* Mobile Number */}
               <div className="space-y-2">
                 <label className="text-xs font-bold tracking-wider text-slate-300 uppercase flex items-center gap-2">
-                  <Phone className="w-4 h-4 text-[#5BB8FF]" />
-                  Mobile Number <span className="text-[#5BB8FF]">*</span>
+                  <Phone className="w-4 h-4 text-[#72E5F8]" />
+                  Mobile Number <span className="text-[#72E5F8]">*</span>
                 </label>
                 <input
                   type="tel"
@@ -307,7 +308,7 @@ export default function RegisterPage() {
               {/* Email Address */}
               <div className="space-y-2">
                 <label className="text-xs font-bold tracking-wider text-slate-300 uppercase flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-[#5BB8FF]" />
+                  <Mail className="w-4 h-4 text-[#72E5F8]" />
                   Email Address <span className="text-slate-500 text-[10px]">(Optional)</span>
                 </label>
                 <input
@@ -333,8 +334,8 @@ export default function RegisterPage() {
               {/* Participant Type */}
               <div className="space-y-2">
                 <label className="text-xs font-bold tracking-wider text-slate-300 uppercase flex items-center gap-2">
-                  <User className="w-4 h-4 text-[#5BB8FF]" />
-                  Participant Type <span className="text-[#5BB8FF]">*</span>
+                  <User className="w-4 h-4 text-[#72E5F8]" />
+                  Participant Type <span className="text-[#72E5F8]">*</span>
                 </label>
                 <select
                   {...register("participantType", {
@@ -370,8 +371,8 @@ export default function RegisterPage() {
               {/* School */}
               <div className="space-y-2">
                 <label className="text-xs font-bold tracking-wider text-slate-300 uppercase flex items-center gap-2">
-                  <School className="w-4 h-4 text-[#5BB8FF]" />
-                  School <span className="text-[#5BB8FF]">*</span>
+                  <School className="w-4 h-4 text-[#72E5F8]" />
+                  School <span className="text-[#72E5F8]">*</span>
                 </label>
                 <input
                   type="text"
@@ -402,8 +403,8 @@ export default function RegisterPage() {
                   className="space-y-2 overflow-hidden"
                 >
                   <label className="text-xs font-bold tracking-wider text-slate-300 uppercase flex items-center gap-2">
-                    <GraduationCap className="w-4 h-4 text-[#5BB8FF]" />
-                    Grade <span className="text-[#5BB8FF]">*</span>
+                    <GraduationCap className="w-4 h-4 text-[#72E5F8]" />
+                    Grade <span className="text-[#72E5F8]">*</span>
                   </label>
                   <select
                     {...register("grade")}
@@ -435,7 +436,7 @@ export default function RegisterPage() {
             <div className="grid grid-cols-1 gap-6">
               <div className="space-y-2">
                 <label className="text-xs font-bold tracking-wider text-slate-300 uppercase flex items-center gap-2">
-                  <Eye className="w-4 h-4 text-[#5BB8FF]" />
+                  <Eye className="w-4 h-4 text-[#72E5F8]" />
                   How did you hear about this session?{" "}
                   <span className="text-slate-500 text-[10px]">(Optional)</span>
                 </label>
@@ -480,7 +481,7 @@ export default function RegisterPage() {
                     className="space-y-2 overflow-hidden"
                   >
                     <label className="text-xs font-bold text-slate-300 uppercase tracking-wide">
-                      Please specify source <span className="text-[#5BB8FF]">*</span>
+                      Please specify source <span className="text-[#72E5F8]">*</span>
                     </label>
                     <input
                       type="text"
@@ -541,9 +542,7 @@ export default function RegisterPage() {
                 hackX Jr. 9.0 Awareness Session
               </h3>
               <p className="text-sm text-[#8ba3c7] leading-relaxed text-justify">
-                Join our exclusive awareness session to learn everything about hackX Jr. 9.0 — Sri
-                Lanka’s premier island-wide school innovation hackathon. Discover how to build
-                groundbreaking technology solutions and succeed in the competition.
+                Join our exclusive awareness session to discover everything you need to know about hackX Jr. 9.0, Sri Lanka's premier island-wide school innovation competition. Learn how to develop impactful solutions and bring your ideas to life.
               </p>
             </div>
 
@@ -615,7 +614,7 @@ export default function RegisterPage() {
                   <span className="text-[9px] text-slate-500 uppercase tracking-wide block">
                     Venue
                   </span>
-                  <span className="text-xs font-bold text-white">A8 Auditorium</span>
+                  <span className="text-xs font-bold text-white leading-tight block">A8 Auditorium, University of Kelaniya</span>
                 </div>
               </div>
 
@@ -635,27 +634,23 @@ export default function RegisterPage() {
             {/* Highlight Points */}
             <div className="space-y-3">
               <div className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-[#5BB8FF] flex-shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-5 h-5 text-[#72E5F8] flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-slate-300">
-                  <strong className="text-white">National Recognition:</strong> Compete with top
-                  young innovators from schools across Sri Lanka's 25 districts.
+                  <strong className="text-white">1. Understand hackX Jr.:</strong> Discover what hackX Jr. is and why it matters. Learn how the competition helps young innovators grow.
                 </p>
               </div>
 
               <div className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-[#5BB8FF] flex-shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-5 h-5 text-[#72E5F8] flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-slate-300">
-                  <strong className="text-white">Online Workshops:</strong> Join live online
-                  sessions covering hackathons, innovation through technology, and proposal
-                  crafting.
+                  <strong className="text-white">2. Develop Winning Ideas:</strong> Learn how to identify real-world problems and create innovative solutions. Understand what makes a project stand out.
                 </p>
               </div>
 
               <div className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-[#5BB8FF] flex-shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-5 h-5 text-[#72E5F8] flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-slate-300">
-                  <strong className="text-white">Industry Mentorship:</strong> Semi-finalist teams
-                  get paired with dedicated industry mentors to guide them through the final stage.
+                  <strong className="text-white">3. Learn from Industry Experts:</strong> Gain valuable insights from experienced professionals. Get practical tips to prepare for your innovation journey.
                 </p>
               </div>
             </div>
@@ -663,7 +658,7 @@ export default function RegisterPage() {
 
           <div className="pt-4 border-t border-white/10 text-center">
             <p className="text-[10px] text-[#8ba3c7] uppercase tracking-wider font-semibold">
-              Organized by Department of Industrial Management
+              Organized by Industrial Management Science Students' Association
             </p>
             <p className="text-[9px] text-slate-500 mt-1">
               Faculty of Science, University of Kelaniya
