@@ -636,21 +636,21 @@ export default function RegisterPage() {
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-[#72E5F8] flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-slate-300">
-                  <strong className="text-white">1. Understand hackX Jr.:</strong> Discover what hackX Jr. is and why it matters. Learn how the competition helps young innovators grow.
+                  <strong className="text-white">Understand hackX Jr.:</strong> Discover what hackX Jr. is and why it matters. Learn how the competition helps young innovators grow.
                 </p>
               </div>
 
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-[#72E5F8] flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-slate-300">
-                  <strong className="text-white">2. Develop Winning Ideas:</strong> Learn how to identify real-world problems and create innovative solutions. Understand what makes a project stand out.
+                  <strong className="text-white">Develop Winning Ideas:</strong> Learn how to identify real-world problems and create innovative solutions. Understand what makes a project stand out.
                 </p>
               </div>
 
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-[#72E5F8] flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-slate-300">
-                  <strong className="text-white">3. Learn from Industry Experts:</strong> Gain valuable insights from experienced professionals. Get practical tips to prepare for your innovation journey.
+                  <strong className="text-white">Learn from Industry Experts:</strong> Gain valuable insights from experienced professionals. Get practical tips to prepare for your innovation journey.
                 </p>
               </div>
             </div>
