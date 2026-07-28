@@ -436,7 +436,7 @@ export function AdminControls({
                   <tr className="border-b border-white/5 bg-slate-900/40 text-slate-400 font-bold uppercase tracking-wider">
                     <th className="px-6 py-4">ID</th>
                     <th className="px-6 py-4">Full Name</th>
-                    <th className="px-6 py-4">Mobile</th>
+                    <th className="px-6 py-4">WhatsApp</th>
                     <th className="px-6 py-4">Email</th>
                     <th className="px-6 py-4">Type</th>
                     <th className="px-6 py-4">School</th>

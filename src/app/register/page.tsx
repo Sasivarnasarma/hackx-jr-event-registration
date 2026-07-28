@@ -7,16 +7,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   User,
   Phone,
-  Mail,
   School,
   GraduationCap,
-  Eye,
   ArrowRight,
   AlertCircle,
   Loader2,
   CheckCircle2,
   Calendar,
-  MapPin,
+  Globe,
   Clock,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -35,35 +33,6 @@ export default function RegisterPage() {
   const [turnstileToken, setTurnstileToken] = useState<string>("");
   const [serverError, setServerError] = useState<string | null>(null);
 
-  // Countdown Timer Logic
-  const [mounted, setMounted] = useState(false);
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-
-  useEffect(() => {
-    setMounted(true);
-    const target = new Date("2026-08-01T09:00:00");
-
-    const calculate = () => {
-      const difference = +target - +new Date();
-      if (difference <= 0) {
-        return { days: 0, hours: 0, minutes: 0, seconds: 0 };
-      }
-      return {
-        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((difference / 1000 / 60) % 60),
-        seconds: Math.floor((difference / 1000) % 60),
-      };
-    };
-
-    setTimeLeft(calculate());
-    const timer = setInterval(() => {
-      setTimeLeft(calculate());
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
-
   // Spotlight mouse effect position
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
@@ -75,10 +44,8 @@ export default function RegisterPage() {
     });
   };
 
-  // Custom states for tracking conditional selection triggers
+  // State for tracking selected participant type
   const [selectedPartType, setSelectedPartType] = useState<string>("");
-  const [selectedSource, setSelectedSource] = useState<string>("");
-  const [customSource, setCustomSource] = useState<string>("");
 
   const {
     register,
@@ -91,11 +58,9 @@ export default function RegisterPage() {
     defaultValues: {
       fullName: "",
       mobileNumber: "",
-      email: "",
       participantType: undefined,
       school: "",
       grade: "",
-      awarenessSource: "",
       turnstileToken: "",
     },
   });
@@ -141,19 +106,6 @@ export default function RegisterPage() {
       turnstileToken: currentToken,
     };
 
-    // If "Other" source was selected, override awarenessSource with the custom text input
-    if (selectedSource === "Other") {
-      if (!customSource.trim()) {
-        setError("awarenessSource", {
-          type: "manual",
-          message: "Please specify how you heard about the session",
-        });
-        setIsSubmitting(false);
-        return;
-      }
-      payload.awarenessSource = customSource;
-    }
-
     try {
       const response = await fetch("/api/registrations", {
         method: "POST",
@@ -171,8 +123,6 @@ export default function RegisterPage() {
           });
         } else if (result.error?.code === "DUPLICATE_MOBILE") {
           setError("mobileNumber", { type: "server", message: result.message });
-        } else if (result.error?.code === "DUPLICATE_EMAIL") {
-          setError("email", { type: "server", message: result.message });
         } else {
           setServerError(result.message || "An unexpected error occurred. Please try again.");
         }
@@ -180,7 +130,8 @@ export default function RegisterPage() {
         return;
       }
 
-      router.push(`/registration-success?name=${encodeURIComponent(data.fullName)}`);
+      const regId = result.data?.id ? `&id=${result.data.id}` : "";
+      router.push(`/registration-success?name=${encodeURIComponent(data.fullName)}${regId}`);
     } catch (err) {
       console.error(err);
       setServerError("Connection failed. Please check your internet connection.");
@@ -214,7 +165,7 @@ export default function RegisterPage() {
           className="text-xs md:text-sm font-semibold tracking-widest text-[#8ba3c7] uppercase text-center leading-relaxed"
         >
           INTER-SCHOOL INNOVATION COMPETITION<br />
-          AWARENESS SESSION
+          ONLINE AWARENESS SESSION
         </motion.p>
       </div>
 
@@ -241,7 +192,7 @@ export default function RegisterPage() {
               Reserve Your Spot
             </h2>
             <p className="text-xs text-slate-400 mt-1 font-light">
-              Fill out the details below to complete your registration.
+              Fill out the details below to complete your registration for the Online Awareness Session.
             </p>
           </div>
 
@@ -280,53 +231,27 @@ export default function RegisterPage() {
               )}
             </div>
 
-            {/* Contact Details Group */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Mobile Number */}
-              <div className="space-y-2">
-                <label className="text-xs font-bold tracking-wider text-slate-300 uppercase flex items-center gap-2">
-                  <Phone className="w-4 h-4 text-[#72E5F8]" />
-                  Mobile Number <span className="text-[#72E5F8]">*</span>
-                </label>
-                <input
-                  type="tel"
-                  placeholder="e.g. 0771234567"
-                  {...register("mobileNumber")}
-                  suppressHydrationWarning
-                  className={`w-full px-4 py-3.5 rounded-xl glass-input outline-none text-sm ${
-                    errors.mobileNumber ? "border-red-500/50 focus:border-red-500" : ""
-                  }`}
-                />
-                {errors.mobileNumber && (
-                  <p className="text-xs text-red-400 flex items-center gap-1 mt-1 font-light">
-                    <AlertCircle className="w-3.5 h-3.5" />
-                    {errors.mobileNumber.message}
-                  </p>
-                )}
-              </div>
-
-              {/* Email Address */}
-              <div className="space-y-2">
-                <label className="text-xs font-bold tracking-wider text-slate-300 uppercase flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-[#72E5F8]" />
-                  Email Address <span className="text-slate-500 text-[10px]">(Optional)</span>
-                </label>
-                <input
-                  type="email"
-                  placeholder="e.g. name@example.com"
-                  {...register("email")}
-                  suppressHydrationWarning
-                  className={`w-full px-4 py-3.5 rounded-xl glass-input outline-none text-sm ${
-                    errors.email ? "border-red-500/50 focus:border-red-500" : ""
-                  }`}
-                />
-                {errors.email && (
-                  <p className="text-xs text-red-400 flex items-center gap-1 mt-1 font-light">
-                    <AlertCircle className="w-3.5 h-3.5" />
-                    {errors.email.message}
-                  </p>
-                )}
-              </div>
+            {/* WhatsApp Number */}
+            <div className="space-y-2">
+              <label className="text-xs font-bold tracking-wider text-slate-300 uppercase flex items-center gap-2">
+                <Phone className="w-4 h-4 text-[#72E5F8]" />
+                WhatsApp Number <span className="text-[#72E5F8]">*</span>
+              </label>
+              <input
+                type="tel"
+                placeholder="e.g. 0771234567"
+                {...register("mobileNumber")}
+                suppressHydrationWarning
+                className={`w-full px-4 py-3.5 rounded-xl glass-input outline-none text-sm ${
+                  errors.mobileNumber ? "border-red-500/50 focus:border-red-500" : ""
+                }`}
+              />
+              {errors.mobileNumber && (
+                <p className="text-xs text-red-400 flex items-center gap-1 mt-1 font-light">
+                  <AlertCircle className="w-3.5 h-3.5" />
+                  {errors.mobileNumber.message}
+                </p>
+              )}
             </div>
 
             {/* Participant Details Group */}
@@ -392,7 +317,7 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {/* Conditional Grade Dropdown */}
+            {/* Conditional Grade Dropdown - Shown ONLY for Student */}
             <AnimatePresence>
               {selectedPartType === "STUDENT" && (
                 <motion.div
@@ -431,69 +356,6 @@ export default function RegisterPage() {
                 </motion.div>
               )}
             </AnimatePresence>
-
-            {/* Awareness Source selection */}
-            <div className="grid grid-cols-1 gap-6">
-              <div className="space-y-2">
-                <label className="text-xs font-bold tracking-wider text-slate-300 uppercase flex items-center gap-2">
-                  <Eye className="w-4 h-4 text-[#72E5F8]" />
-                  How did you hear about this session?{" "}
-                  <span className="text-slate-500 text-[10px]">(Optional)</span>
-                </label>
-                <select
-                  {...register("awarenessSource", {
-                    onChange: (e) => {
-                      setSelectedSource(e.target.value);
-                    },
-                  })}
-                  className={`w-full px-4 py-3.5 rounded-xl glass-select outline-none text-sm ${
-                    errors.awarenessSource ? "border-red-500/50 focus:border-red-500" : ""
-                  }`}
-                  defaultValue=""
-                >
-                  <option value="" disabled>
-                    Select Source (Optional)
-                  </option>
-                  <option value="School">School</option>
-                  <option value="Teacher">Teacher</option>
-                  <option value="Friend">Friend</option>
-                  <option value="Social media">Social Media</option>
-                  <option value="WhatsApp">WhatsApp</option>
-                  <option value="Website">Website</option>
-                  <option value="Other">Other (Please specify)</option>
-                </select>
-                {errors.awarenessSource && (
-                  <p className="text-xs text-red-400 flex items-center gap-1 mt-1 font-light">
-                    <AlertCircle className="w-3.5 h-3.5" />
-                    {errors.awarenessSource.message}
-                  </p>
-                )}
-              </div>
-
-              {/* Conditional Other Source text input */}
-              <AnimatePresence>
-                {selectedSource === "Other" && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="space-y-2 overflow-hidden"
-                  >
-                    <label className="text-xs font-bold text-slate-300 uppercase tracking-wide">
-                      Please specify source <span className="text-[#72E5F8]">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Newspaper, flyer, billboard"
-                      value={customSource}
-                      onChange={(e) => setCustomSource(e.target.value)}
-                      className="w-full px-4 py-3.5 rounded-xl glass-input outline-none text-sm"
-                    />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
 
             {/* Cloudflare Turnstile */}
             <div className="space-y-2">
@@ -539,61 +401,15 @@ export default function RegisterPage() {
           <div className="space-y-6">
             <div className="space-y-3">
               <h3 className="font-heading font-extrabold text-lg text-white mb-2 tracking-wide text-center">
-                hackX Jr. 9.0 Awareness Session
+                hackX Jr. 9.0 Online Awareness Session
               </h3>
               <p className="text-sm text-[#8ba3c7] leading-relaxed text-justify">
-                Join our exclusive awareness session to discover everything you need to know about hackX Jr. 9.0, Sri Lanka's premier island-wide school innovation competition. Learn how to develop impactful solutions and bring your ideas to life.
+                Join our exclusive online awareness session to discover everything you need to know about hackX Jr. 9.0, Sri Lanka's premier island-wide school innovation competition. Learn how to develop impactful solutions and bring your ideas to life.
               </p>
             </div>
 
-            {/* Event Countdown Timer */}
-            {mounted && (
-              <div className="space-y-2 pt-2">
-                <span className="text-[10px] text-slate-500 uppercase tracking-widest block text-center font-bold">
-                  Event Starts In
-                </span>
-                <div className="grid grid-cols-4 gap-2">
-                  <div className="bg-[#052E3F]/40 border border-white/5 rounded-2xl p-3 text-center flex flex-col items-center justify-center">
-                    <span className="text-xl font-heading font-black text-[#72E5F8] tracking-tight">
-                      {String(timeLeft.days).padStart(2, "0")}
-                    </span>
-                    <span className="text-[8px] uppercase tracking-wide text-slate-400 font-bold mt-0.5">
-                      Days
-                    </span>
-                  </div>
-
-                  <div className="bg-[#052E3F]/40 border border-white/5 rounded-2xl p-3 text-center flex flex-col items-center justify-center">
-                    <span className="text-xl font-heading font-black text-[#72E5F8] tracking-tight">
-                      {String(timeLeft.hours).padStart(2, "0")}
-                    </span>
-                    <span className="text-[8px] uppercase tracking-wide text-slate-400 font-bold mt-0.5">
-                      Hours
-                    </span>
-                  </div>
-
-                  <div className="bg-[#052E3F]/40 border border-white/5 rounded-2xl p-3 text-center flex flex-col items-center justify-center">
-                    <span className="text-xl font-heading font-black text-[#72E5F8] tracking-tight">
-                      {String(timeLeft.minutes).padStart(2, "0")}
-                    </span>
-                    <span className="text-[8px] uppercase tracking-wide text-slate-400 font-bold mt-0.5">
-                      Mins
-                    </span>
-                  </div>
-
-                  <div className="bg-[#052E3F]/40 border border-white/5 rounded-2xl p-3 text-center flex flex-col items-center justify-center relative overflow-hidden group">
-                    <span className="text-xl font-heading font-black text-[#72E5F8] tracking-tight">
-                      {String(timeLeft.seconds).padStart(2, "0")}
-                    </span>
-                    <span className="text-[8px] uppercase tracking-wide text-slate-400 font-bold mt-0.5">
-                      Secs
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
-
             {/* Event Details Grid */}
-            <div className="grid grid-cols-3 gap-2 pt-2 border-t border-b border-white/5 py-4 text-center">
+            <div className="grid grid-cols-2 gap-4 pt-2 border-t border-b border-white/5 py-4 text-center">
               <div className="flex flex-col items-center gap-2">
                 <div className="w-8 h-8 rounded-lg bg-[#052E3F] border border-[#72E5F8]/20 flex items-center justify-center flex-shrink-0">
                   <Calendar className="w-4 h-4 text-[#72E5F8]" />
@@ -608,25 +424,13 @@ export default function RegisterPage() {
 
               <div className="flex flex-col items-center gap-2">
                 <div className="w-8 h-8 rounded-lg bg-[#052E3F] border border-[#72E5F8]/20 flex items-center justify-center flex-shrink-0">
-                  <MapPin className="w-4 h-4 text-[#72E5F8]" />
+                  <Globe className="w-4 h-4 text-[#72E5F8]" />
                 </div>
                 <div>
                   <span className="text-[9px] text-slate-500 uppercase tracking-wide block">
-                    Venue
+                    Mode
                   </span>
-                  <span className="text-xs font-bold text-white leading-tight block">A8 Auditorium, University of Kelaniya</span>
-                </div>
-              </div>
-
-              <div className="flex flex-col items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-[#052E3F] border border-[#72E5F8]/20 flex items-center justify-center flex-shrink-0">
-                  <Clock className="w-4 h-4 text-[#72E5F8]" />
-                </div>
-                <div>
-                  <span className="text-[9px] text-slate-500 uppercase tracking-wide block">
-                    Time
-                  </span>
-                  <span className="text-xs font-bold text-white">09:00 AM</span>
+                  <span className="text-xs font-bold text-white leading-tight block">Online</span>
                 </div>
               </div>
             </div>

@@ -46,7 +46,7 @@ export async function GET() {
     const headers = [
       "ID",
       "Full Name",
-      "Mobile Number",
+      "WhatsApp Number",
       "Email Address",
       "Participant Type",
       "School",

@@ -65,12 +65,11 @@ export const registrationSchema = z
       .max(100, "Full name cannot exceed 100 characters"),
     mobileNumber: z
       .string()
-      .min(9, "Mobile number is too short")
-      .max(20, "Mobile number is too long")
+      .min(9, "WhatsApp number is too short")
+      .max(20, "WhatsApp number is too long")
       .refine((val) => normalizeMobileNumber(val) !== null, {
-        message: "Please enter a valid Sri Lankan mobile number (e.g. 0771234567)",
+        message: "Please enter a valid Sri Lankan WhatsApp number (e.g. 0771234567)",
       }),
-    email: z.string().email("Please enter a valid email address").optional().or(z.literal("")),
     participantType: z.enum(participantTypes, {
       errorMap: () => ({ message: "Please select a valid participant type" }),
     }),
@@ -79,7 +78,6 @@ export const registrationSchema = z
       .min(3, "School name must be at least 3 characters")
       .max(150, "School name cannot exceed 150 characters"),
     grade: z.string().optional().or(z.null()),
-    awarenessSource: z.string().optional().or(z.literal("")),
     turnstileToken: z.string().min(1, "Bot verification is required"),
   })
   .refine(

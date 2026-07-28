@@ -1,24 +1,45 @@
 "use client";
 
-import React, { Suspense, useRef } from "react";
+import React, { Suspense, useRef, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Check,
   ShieldCheck,
   RefreshCcw,
   HelpCircle,
   Calendar,
-  MapPin,
+  Globe,
   Clock,
   CheckCircle2,
+  Send,
+  MessageSquareHeart,
 } from "lucide-react";
 import Image from "next/image";
+
+const feedbackOptions = [
+  "School",
+  "Teacher",
+  "Friend",
+  "Social Media",
+  "WhatsApp",
+  "Website",
+  "Other",
+];
 
 function SuccessCard() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const name = searchParams.get("name") || "Participant";
+  const rawId = searchParams.get("id");
+  const registrationId = rawId ? parseInt(rawId, 10) : null;
+
+  // Feedback poll state
+  const [selectedSource, setSelectedSource] = useState<string | null>(null);
+  const [customSource, setCustomSource] = useState("");
+  const [isSubmittingFeedback, setIsSubmittingFeedback] = useState(false);
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
+  const [showCustomInput, setShowCustomInput] = useState(false);
 
   // Spotlight glow animation helper
   const cardRef = useRef<HTMLDivElement>(null);
@@ -31,6 +52,49 @@ function SuccessCard() {
     cardRef.current.style.setProperty("--mouse-y", `${y}px`);
   };
 
+  const handleSelectFeedback = async (option: string) => {
+    if (option === "Other") {
+      setSelectedSource("Other");
+      setShowCustomInput(true);
+      return;
+    }
+
+    setSelectedSource(option);
+    setShowCustomInput(false);
+    await submitFeedback(option);
+  };
+
+  const submitFeedback = async (sourceText: string) => {
+    if (!registrationId || !sourceText.trim()) return;
+
+    setIsSubmittingFeedback(true);
+    try {
+      const res = await fetch("/api/registrations", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: registrationId,
+          awarenessSource: sourceText.trim(),
+        }),
+      });
+
+      if (res.ok) {
+        setFeedbackSubmitted(true);
+      }
+    } catch (err) {
+      console.error("Failed to submit feedback:", err);
+    } finally {
+      setIsSubmittingFeedback(false);
+    }
+  };
+
+  const handleCustomSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (customSource.trim()) {
+      await submitFeedback(customSource);
+    }
+  };
+
   return (
     <motion.div
       ref={cardRef}
@@ -38,41 +102,116 @@ function SuccessCard() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
       onMouseMove={handleMouseMove}
-      className="glass-panel rounded-3xl p-6 md:p-8 relative overflow-hidden"
+      className="glass-panel rounded-3xl p-6 md:p-8 relative overflow-hidden flex flex-col justify-between"
     >
-      {/* Success Icon Animation */}
-      <div className="flex justify-center mb-6">
+      <div>
+        {/* Success Icon Animation */}
+        <div className="flex justify-center mb-6">
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.2 }}
+            className="w-20 h-20 rounded-full bg-gradient-to-tr from-[#0A5C72] to-[#72E5F8] flex items-center justify-center p-1 shadow-lg shadow-[#18A0C0]/20"
+          >
+            <div className="w-full h-full rounded-full bg-[#010E13] flex items-center justify-center">
+              <Check className="w-10 h-10 text-[#72E5F8]" />
+            </div>
+          </motion.div>
+        </div>
+
         <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.2 }}
-          className="w-20 h-20 rounded-full bg-gradient-to-tr from-[#0A5C72] to-[#72E5F8] flex items-center justify-center p-1 shadow-lg shadow-[#18A0C0]/20"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="text-center"
         >
-          <div className="w-full h-full rounded-full bg-[#010E13] flex items-center justify-center">
-            <Check className="w-10 h-10 text-[#72E5F8]" />
-          </div>
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-[#72E5F8]/30 bg-[#72E5F8]/5 text-[#72E5F8] text-xs font-semibold tracking-wide uppercase mb-4">
+            <ShieldCheck className="w-3.5 h-3.5" /> Verified Submission
+          </span>
+
+          <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight font-heading uppercase mb-4">
+            Registration Complete!
+          </h1>
+
+          <p className="text-slate-400 text-sm leading-relaxed font-light mb-6">
+            Thank you for registering, <span className="text-white font-medium">{name}</span>. Your spot for the hackX Jr. 9.0 Online Awareness Session has been successfully reserved.
+          </p>
         </motion.div>
+
+        {/* Optional Post-Registration Feedback Survey */}
+        {registrationId && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="my-6 p-5 rounded-2xl border border-[#72E5F8]/20 bg-[#052E3F]/30 backdrop-blur-md relative overflow-hidden"
+          >
+            <div className="flex items-center gap-2 mb-3 text-xs font-bold uppercase tracking-wider text-[#72E5F8]">
+              <MessageSquareHeart className="w-4 h-4" />
+              How did you hear about us? <span className="text-slate-400 text-[10px] lowercase font-normal">(Optional)</span>
+            </div>
+
+            {feedbackSubmitted ? (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="flex items-center gap-2 text-xs text-emerald-400 font-medium py-1"
+              >
+                <CheckCircle2 className="w-4 h-4" />
+                <span>Thank you for your feedback! ✨</span>
+              </motion.div>
+            ) : (
+              <div className="space-y-3">
+                <div className="flex flex-wrap gap-2">
+                  {feedbackOptions.map((option) => (
+                    <button
+                      key={option}
+                      type="button"
+                      disabled={isSubmittingFeedback}
+                      onClick={() => handleSelectFeedback(option)}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all duration-200 cursor-pointer ${
+                        selectedSource === option
+                          ? "bg-[#72E5F8] text-[#010E13] font-bold shadow-md shadow-[#72E5F8]/20"
+                          : "border border-white/10 bg-slate-900/50 text-slate-300 hover:border-[#72E5F8]/40 hover:text-white"
+                      }`}
+                    >
+                      {option}
+                    </button>
+                  ))}
+                </div>
+
+                <AnimatePresence>
+                  {showCustomInput && (
+                    <motion.form
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      onSubmit={handleCustomSubmit}
+                      className="flex items-center gap-2 pt-2"
+                    >
+                      <input
+                        type="text"
+                        placeholder="Please specify source..."
+                        value={customSource}
+                        onChange={(e) => setCustomSource(e.target.value)}
+                        className="flex-1 px-3 py-2 rounded-xl glass-input text-xs outline-none"
+                      />
+                      <button
+                        type="submit"
+                        disabled={isSubmittingFeedback || !customSource.trim()}
+                        className="px-4 py-2 rounded-xl bg-[#72E5F8] text-[#010E13] font-bold text-xs hover:bg-[#5BB8FF] transition-all flex items-center gap-1 disabled:opacity-50"
+                      >
+                        <Send className="w-3.5 h-3.5" />
+                        Submit
+                      </button>
+                    </motion.form>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
+          </motion.div>
+        )}
       </div>
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.4 }}
-        className="text-center"
-      >
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-[#72E5F8]/30 bg-[#72E5F8]/5 text-[#72E5F8] text-xs font-semibold tracking-wide uppercase mb-4">
-          <ShieldCheck className="w-3.5 h-3.5" /> Verified Submission
-        </span>
-
-        <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight font-heading uppercase mb-4">
-          Registration Complete!
-        </h1>
-
-        <p className="text-slate-400 text-sm leading-relaxed font-light mb-8">
-          Thank you for registering, <span className="text-white font-medium">{name}</span>. Your
-          seat for the hackX Jr. 9.0 Awareness Session has been successfully reserved.
-        </p>
-      </motion.div>
 
       {/* Footer support details */}
       <motion.div
@@ -135,7 +274,7 @@ export default function RegistrationSuccessPage() {
           transition={{ duration: 0.5, delay: 0.1 }}
           className="text-xs md:text-sm font-semibold tracking-widest text-[#8ba3c7] uppercase"
         >
-          Inter-School Innovation Competition — Awareness Session
+          Inter-School Innovation Competition — Online Awareness Session
         </motion.p>
       </div>
 
@@ -165,17 +304,17 @@ export default function RegistrationSuccessPage() {
           <div className="space-y-6">
             <div className="space-y-3">
               <h3 className="font-heading font-extrabold text-lg text-white mb-2 tracking-wide text-center">
-                hackX Jr. 9.0 Awareness Session
+                hackX Jr. 9.0 Online Awareness Session
               </h3>
               <p className="text-sm text-[#8ba3c7] leading-relaxed text-justify">
-                Join our exclusive awareness session to learn everything about hackX Jr. 9.0 — Sri
+                Join our exclusive online awareness session to learn everything about hackX Jr. 9.0 — Sri
                 Lanka’s premier island-wide school innovation hackathon. Discover how to build
                 groundbreaking technology solutions and succeed in the competition.
               </p>
             </div>
 
             {/* Event Details Grid */}
-            <div className="grid grid-cols-3 gap-2 pt-2 border-t border-b border-white/5 py-4 text-center">
+            <div className="grid grid-cols-2 gap-4 pt-2 border-t border-b border-white/5 py-4 text-center">
               <div className="flex flex-col items-center gap-2">
                 <div className="w-8 h-8 rounded-lg bg-[#052E3F] border border-[#72E5F8]/20 flex items-center justify-center flex-shrink-0">
                   <Calendar className="w-4 h-4 text-[#72E5F8]" />
@@ -190,25 +329,13 @@ export default function RegistrationSuccessPage() {
 
               <div className="flex flex-col items-center gap-2">
                 <div className="w-8 h-8 rounded-lg bg-[#052E3F] border border-[#72E5F8]/20 flex items-center justify-center flex-shrink-0">
-                  <MapPin className="w-4 h-4 text-[#72E5F8]" />
+                  <Globe className="w-4 h-4 text-[#72E5F8]" />
                 </div>
                 <div>
                   <span className="text-[9px] text-slate-500 uppercase tracking-wide block">
-                    Venue
+                    Mode
                   </span>
-                  <span className="text-xs font-bold text-white">A8 Auditorium</span>
-                </div>
-              </div>
-
-              <div className="flex flex-col items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-[#052E3F] border border-[#72E5F8]/20 flex items-center justify-center flex-shrink-0">
-                  <Clock className="w-4 h-4 text-[#72E5F8]" />
-                </div>
-                <div>
-                  <span className="text-[9px] text-slate-500 uppercase tracking-wide block">
-                    Time
-                  </span>
-                  <span className="text-xs font-bold text-white">09:00 AM</span>
+                  <span className="text-xs font-bold text-white">Online</span>
                 </div>
               </div>
             </div>
