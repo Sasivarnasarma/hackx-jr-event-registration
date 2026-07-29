@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Noto_Sans_Sinhala } from "next/font/google";
 import "./globals.css";
 import { OceanBackground } from "@/components/ui/ocean-background";
 import { Preloader } from "@/components/ui/preloader";
+
+import { LanguageProvider } from "@/context/language-context";
+import { LanguageModal } from "@/components/ui/language-modal";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -12,6 +15,13 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const notoSinhala = Noto_Sans_Sinhala({
+  variable: "--font-sinhala",
+  subsets: ["sinhala"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
 });
 
 export const viewport = {
@@ -43,15 +53,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${notoSinhala.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-[#010E13] text-[#f0f4ff] font-sans antialiased">
-        <Preloader />
-        <main className="flex-grow flex flex-col justify-center relative">
-          {/* Ocean particles background */}
-          <OceanBackground />
+        <LanguageProvider>
+          <Preloader />
+          <LanguageModal />
+          <main className="flex-grow flex flex-col justify-center relative">
+            {/* Ocean particles background */}
+            <OceanBackground />
 
-          {children}
-        </main>
+            {children}
+          </main>
+        </LanguageProvider>
       </body>
     </html>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "framer-motion";
@@ -15,7 +15,6 @@ import {
   CheckCircle2,
   Calendar,
   Globe,
-  Clock,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -26,23 +25,15 @@ import {
   participantTypes,
 } from "@/lib/validation";
 import { Turnstile } from "@/components/ui/turnstile";
+import { useLanguage } from "@/context/language-context";
+import { LanguageSwitcher } from "@/components/ui/language-switcher";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { t, lang } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState<string>("");
   const [serverError, setServerError] = useState<string | null>(null);
-
-  // Spotlight mouse effect position
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    setMousePosition({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-    });
-  };
 
   // State for tracking selected participant type
   const [selectedPartType, setSelectedPartType] = useState<string>("");
@@ -94,7 +85,7 @@ export default function RegisterPage() {
     if (!currentToken) {
       setError("turnstileToken", {
         type: "manual",
-        message: "Bot verification is required. Please solve the captcha.",
+        message: t("val.captcha.required"),
       });
       setIsSubmitting(false);
       return;
@@ -122,9 +113,9 @@ export default function RegisterPage() {
             setError(key as any, { type: "server", message: messages[0] });
           });
         } else if (result.error?.code === "DUPLICATE_MOBILE") {
-          setError("mobileNumber", { type: "server", message: result.message });
+          setError("mobileNumber", { type: "server", message: t("val.duplicate.whatsapp") });
         } else {
-          setServerError(result.message || "An unexpected error occurred. Please try again.");
+          setServerError(result.message || t("val.connection.error"));
         }
         setIsSubmitting(false);
         return;
@@ -134,13 +125,18 @@ export default function RegisterPage() {
       router.push(`/registration-success?name=${encodeURIComponent(data.fullName)}${regId}`);
     } catch (err) {
       console.error(err);
-      setServerError("Connection failed. Please check your internet connection.");
+      setServerError(t("val.connection.error"));
       setIsSubmitting(false);
     }
   };
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4 py-8 md:py-12 relative z-10">
+      {/* Top Floating Language Switcher Header */}
+      <div className="flex justify-end mb-4">
+        <LanguageSwitcher />
+      </div>
+
       {/* Brand Header */}
       <div className="text-center mb-10 flex flex-col items-center">
         <motion.div
@@ -164,8 +160,7 @@ export default function RegisterPage() {
           transition={{ duration: 0.5, delay: 0.1 }}
           className="text-xs md:text-sm font-semibold tracking-widest text-[#8ba3c7] uppercase text-center leading-relaxed"
         >
-          INTER-SCHOOL INNOVATION COMPETITION<br />
-          ONLINE AWARENESS SESSION
+          {t("header.tagline")}
         </motion.p>
       </div>
 
@@ -176,24 +171,21 @@ export default function RegisterPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          onMouseMove={handleMouseMove}
-          style={
-            {
-              "--mouse-x": `${mousePosition.x}px`,
-              "--mouse-y": `${mousePosition.y}px`,
-            } as React.CSSProperties
-          }
           className="glass-panel order-2 lg:order-1 lg:col-span-8 rounded-3xl p-6 md:p-10 relative overflow-hidden h-full flex flex-col"
         >
-          <div className="mouse-spotlight" />
-
           <div className="mb-6 relative z-10">
-            <h2 className="text-xl md:text-2xl font-black font-heading text-white tracking-wide uppercase bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-100 to-[#72E5F8]">
-              Reserve Your Spot
+            <h2 className="text-xl md:text-3xl font-black font-heading text-white tracking-wide uppercase">
+              {lang === "en" ? (
+                <>
+                  <span className="subtle-sweep-online">ONLINE</span> AWARENESS SESSION REGISTRATION
+                </>
+              ) : (
+                <>
+                  <span className="subtle-sweep-online">ONLINE</span> දැනුවත් කිරීමේ වැඩසටහන් ලියාපදිංචිය
+                </>
+              )}
             </h2>
-            <p className="text-xs text-slate-400 mt-1 font-light">
-              Fill out the details below to complete your registration for the Online Awareness Session.
-            </p>
+            <p className="text-xs text-slate-400 mt-1.5 font-light">{t("form.subtitle")}</p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 relative z-10" noValidate>
@@ -212,11 +204,11 @@ export default function RegisterPage() {
             <div className="space-y-2">
               <label className="text-xs font-bold tracking-wider text-slate-300 uppercase flex items-center gap-2">
                 <User className="w-4 h-4 text-[#72E5F8]" />
-                Full Name <span className="text-[#72E5F8]">*</span>
+                {t("form.label.fullName")} <span className="text-[#72E5F8]">*</span>
               </label>
               <input
                 type="text"
-                placeholder="Enter your full name"
+                placeholder={t("form.placeholder.fullName")}
                 {...register("fullName")}
                 suppressHydrationWarning
                 className={`w-full px-4 py-3.5 rounded-xl glass-input outline-none text-sm ${
@@ -235,11 +227,11 @@ export default function RegisterPage() {
             <div className="space-y-2">
               <label className="text-xs font-bold tracking-wider text-slate-300 uppercase flex items-center gap-2">
                 <Phone className="w-4 h-4 text-[#72E5F8]" />
-                WhatsApp Number <span className="text-[#72E5F8]">*</span>
+                {t("form.label.whatsapp")} <span className="text-[#72E5F8]">*</span>
               </label>
               <input
                 type="tel"
-                placeholder="e.g. 0771234567"
+                placeholder={t("form.placeholder.whatsapp")}
                 {...register("mobileNumber")}
                 suppressHydrationWarning
                 className={`w-full px-4 py-3.5 rounded-xl glass-input outline-none text-sm ${
@@ -260,7 +252,7 @@ export default function RegisterPage() {
               <div className="space-y-2">
                 <label className="text-xs font-bold tracking-wider text-slate-300 uppercase flex items-center gap-2">
                   <User className="w-4 h-4 text-[#72E5F8]" />
-                  Participant Type <span className="text-[#72E5F8]">*</span>
+                  {t("form.label.participantType")} <span className="text-[#72E5F8]">*</span>
                 </label>
                 <select
                   {...register("participantType", {
@@ -277,13 +269,11 @@ export default function RegisterPage() {
                   defaultValue=""
                 >
                   <option value="" disabled>
-                    Select Type
+                    {t("form.option.defaultType")}
                   </option>
-                  {participantTypes.map((type) => (
-                    <option key={type} value={type}>
-                      {type.charAt(0) + type.slice(1).toLowerCase()}
-                    </option>
-                  ))}
+                  <option value="STUDENT">{t("form.option.student")}</option>
+                  <option value="TEACHER">{t("form.option.teacher")}</option>
+                  <option value="PRINCIPAL">{t("form.option.principal")}</option>
                 </select>
                 {errors.participantType && (
                   <p className="text-xs text-red-400 flex items-center gap-1 mt-1 font-light">
@@ -297,11 +287,11 @@ export default function RegisterPage() {
               <div className="space-y-2">
                 <label className="text-xs font-bold tracking-wider text-slate-300 uppercase flex items-center gap-2">
                   <School className="w-4 h-4 text-[#72E5F8]" />
-                  School <span className="text-[#72E5F8]">*</span>
+                  {t("form.label.school")} <span className="text-[#72E5F8]">*</span>
                 </label>
                 <input
                   type="text"
-                  placeholder="Enter your school name"
+                  placeholder={t("form.placeholder.school")}
                   {...register("school")}
                   suppressHydrationWarning
                   className={`w-full px-4 py-3.5 rounded-xl glass-input outline-none text-sm ${
@@ -329,7 +319,7 @@ export default function RegisterPage() {
                 >
                   <label className="text-xs font-bold tracking-wider text-slate-300 uppercase flex items-center gap-2">
                     <GraduationCap className="w-4 h-4 text-[#72E5F8]" />
-                    Grade <span className="text-[#72E5F8]">*</span>
+                    {t("form.label.grade")} <span className="text-[#72E5F8]">*</span>
                   </label>
                   <select
                     {...register("grade")}
@@ -339,13 +329,15 @@ export default function RegisterPage() {
                     defaultValue=""
                   >
                     <option value="" disabled>
-                      Select Grade
+                      {t("form.option.defaultGrade")}
                     </option>
-                    {gradeOptions.map((grade) => (
-                      <option key={grade} value={grade}>
-                        {grade}
-                      </option>
-                    ))}
+                    <option value="Grade 8">{t("form.option.grade8")}</option>
+                    <option value="Grade 9">{t("form.option.grade9")}</option>
+                    <option value="Grade 10">{t("form.option.grade10")}</option>
+                    <option value="Grade 11">{t("form.option.grade11")}</option>
+                    <option value="Grade 12">{t("form.option.grade12")}</option>
+                    <option value="Grade 13">{t("form.option.grade13")}</option>
+                    <option value="Other">{t("form.option.otherGrade")}</option>
                   </select>
                   {errors.grade && (
                     <p className="text-xs text-red-400 flex items-center gap-1 mt-1 font-light">
@@ -379,11 +371,11 @@ export default function RegisterPage() {
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  Processing...
+                  {t("form.button.submitting")}
                 </>
               ) : (
                 <>
-                  Confirm Registration
+                  {t("form.button.submit")}
                   <ArrowRight className="w-5 h-5" />
                 </>
               )}
@@ -401,10 +393,10 @@ export default function RegisterPage() {
           <div className="space-y-6">
             <div className="space-y-3">
               <h3 className="font-heading font-extrabold text-lg text-white mb-2 tracking-wide text-center">
-                hackX Jr. 9.0 Online Awareness Session
+                {t("info.title")}
               </h3>
-              <p className="text-sm text-[#8ba3c7] leading-relaxed text-justify">
-                Join our exclusive online awareness session to discover everything you need to know about hackX Jr. 9.0, Sri Lanka's premier island-wide school innovation competition. Learn how to develop impactful solutions and bring your ideas to life.
+              <p lang={lang} className="text-sm text-[#8ba3c7] leading-relaxed text-justify [text-align-last:left] hyphens-auto [word-break:break-word]">
+                {t("info.description")}
               </p>
             </div>
 
@@ -416,9 +408,9 @@ export default function RegisterPage() {
                 </div>
                 <div>
                   <span className="text-[9px] text-slate-500 uppercase tracking-wide block">
-                    Date
+                    {t("info.meta.dateLabel")}
                   </span>
-                  <span className="text-xs font-bold text-white">1st Aug 2026</span>
+                  <span className="text-xs font-bold text-white">{t("info.meta.dateValue")}</span>
                 </div>
               </div>
 
@@ -428,9 +420,11 @@ export default function RegisterPage() {
                 </div>
                 <div>
                   <span className="text-[9px] text-slate-500 uppercase tracking-wide block">
-                    Mode
+                    {t("info.meta.modeLabel")}
                   </span>
-                  <span className="text-xs font-bold text-white leading-tight block">Online</span>
+                  <span className="text-xs font-bold text-white leading-tight block">
+                    {t("info.meta.modeValue")}
+                  </span>
                 </div>
               </div>
             </div>
@@ -440,21 +434,24 @@ export default function RegisterPage() {
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-[#72E5F8] flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-slate-300">
-                  <strong className="text-white">Understand hackX Jr.:</strong> Discover what hackX Jr. is and why it matters. Learn how the competition helps young innovators grow.
+                  <strong className="text-white">{t("info.point1.title")}</strong>{" "}
+                  {t("info.point1.desc")}
                 </p>
               </div>
 
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-[#72E5F8] flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-slate-300">
-                  <strong className="text-white">Develop Winning Ideas:</strong> Learn how to identify real-world problems and create innovative solutions. Understand what makes a project stand out.
+                  <strong className="text-white">{t("info.point2.title")}</strong>{" "}
+                  {t("info.point2.desc")}
                 </p>
               </div>
 
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-[#72E5F8] flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-slate-300">
-                  <strong className="text-white">Learn from Industry Experts:</strong> Gain valuable insights from experienced professionals. Get practical tips to prepare for your innovation journey.
+                  <strong className="text-white">{t("info.point3.title")}</strong>{" "}
+                  {t("info.point3.desc")}
                 </p>
               </div>
             </div>
@@ -462,11 +459,9 @@ export default function RegisterPage() {
 
           <div className="pt-4 border-t border-white/10 text-center">
             <p className="text-[10px] text-[#8ba3c7] uppercase tracking-wider font-semibold">
-              Organized by the Industrial Management Science Students' Association
+              {t("info.org.line1")}
             </p>
-            <p className="text-[9px] text-slate-500 mt-1">
-              Faculty of Science, University of Kelaniya
-            </p>
+            <p className="text-[9px] text-slate-500 mt-1">{t("info.org.line2")}</p>
           </div>
         </motion.div>
       </div>
@@ -478,9 +473,7 @@ export default function RegisterPage() {
         transition={{ delay: 0.4 }}
         className="mt-12 text-center"
       >
-        <p className="text-xs text-slate-500 font-light tracking-wide">
-          © 2026 hackX national hackathon series. All rights reserved.
-        </p>
+        <p className="text-xs text-slate-500 font-light tracking-wide">{t("info.footer.copyright")}</p>
       </motion.div>
     </div>
   );

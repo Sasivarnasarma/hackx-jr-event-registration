@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense, useRef, useState } from "react";
+import React, { Suspense, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -10,26 +10,20 @@ import {
   HelpCircle,
   Calendar,
   Globe,
-  Clock,
   CheckCircle2,
   Send,
   MessageSquareHeart,
+  ArrowRight,
+  MessageCircle,
 } from "lucide-react";
 import Image from "next/image";
-
-const feedbackOptions = [
-  "School",
-  "Teacher",
-  "Friend",
-  "Social Media",
-  "WhatsApp",
-  "Website",
-  "Other",
-];
+import { useLanguage } from "@/context/language-context";
+import { LanguageSwitcher } from "@/components/ui/language-switcher";
 
 function SuccessCard() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { t } = useLanguage();
   const name = searchParams.get("name") || "Participant";
   const rawId = searchParams.get("id");
   const registrationId = rawId ? parseInt(rawId, 10) : null;
@@ -41,27 +35,26 @@ function SuccessCard() {
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
   const [showCustomInput, setShowCustomInput] = useState(false);
 
-  // Spotlight glow animation helper
-  const cardRef = useRef<HTMLDivElement>(null);
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    cardRef.current.style.setProperty("--mouse-x", `${x}px`);
-    cardRef.current.style.setProperty("--mouse-y", `${y}px`);
-  };
+  const feedbackOptions = [
+    { label: t("survey.option.school"), val: "School" },
+    { label: t("survey.option.teacher"), val: "Teacher" },
+    { label: t("survey.option.friend"), val: "Friend" },
+    { label: t("survey.option.socialMedia"), val: "Social Media" },
+    { label: t("survey.option.whatsapp"), val: "WhatsApp" },
+    { label: t("survey.option.website"), val: "Website" },
+    { label: t("survey.option.other"), val: "Other" },
+  ];
 
-  const handleSelectFeedback = async (option: string) => {
-    if (option === "Other") {
+  const handleSelectFeedback = async (optionValue: string) => {
+    if (optionValue === "Other") {
       setSelectedSource("Other");
       setShowCustomInput(true);
       return;
     }
 
-    setSelectedSource(option);
+    setSelectedSource(optionValue);
     setShowCustomInput(false);
-    await submitFeedback(option);
+    await submitFeedback(optionValue);
   };
 
   const submitFeedback = async (sourceText: string) => {
@@ -97,11 +90,9 @@ function SuccessCard() {
 
   return (
     <motion.div
-      ref={cardRef}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
-      onMouseMove={handleMouseMove}
       className="glass-panel rounded-3xl p-6 md:p-8 relative overflow-hidden flex flex-col justify-between"
     >
       <div>
@@ -126,16 +117,55 @@ function SuccessCard() {
           className="text-center"
         >
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-[#72E5F8]/30 bg-[#72E5F8]/5 text-[#72E5F8] text-xs font-semibold tracking-wide uppercase mb-4">
-            <ShieldCheck className="w-3.5 h-3.5" /> Verified Submission
+            <ShieldCheck className="w-3.5 h-3.5" /> {t("success.badge")}
           </span>
 
           <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight font-heading uppercase mb-4">
-            Registration Complete!
+            {t("success.title")}
           </h1>
 
-          <p className="text-slate-400 text-sm leading-relaxed font-light mb-6">
-            Thank you for registering, <span className="text-white font-medium">{name}</span>. Your spot for the hackX Jr. 9.0 Online Awareness Session has been successfully reserved.
+          <p className="text-slate-300 text-sm leading-relaxed font-light mb-6">
+            {t("success.message", { name })}
           </p>
+        </motion.div>
+
+        {/* Prominent WhatsApp Group Join Section */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 15 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.45 }}
+          className="my-6 p-6 rounded-3xl border-2 border-[#25D366]/50 bg-gradient-to-br from-[#022c16]/90 via-[#052E3F]/95 to-[#022c16]/90 backdrop-blur-xl relative overflow-hidden text-center shadow-[0_0_40px_rgba(37,211,102,0.25)]"
+        >
+          {/* Subtle background glow effect */}
+          <div className="absolute -right-12 -top-12 w-36 h-36 bg-[#25D366]/20 rounded-full blur-2xl pointer-events-none" />
+          <div className="absolute -left-12 -bottom-12 w-36 h-36 bg-[#72E5F8]/15 rounded-full blur-2xl pointer-events-none" />
+
+          <div className="relative z-10 flex flex-col items-center">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#25D366]/15 border border-[#25D366]/40 text-[#25D366] text-xs font-extrabold uppercase tracking-wider mb-3">
+              <MessageCircle className="w-4 h-4" /> {t("whatsapp.badge")}
+            </div>
+
+            <h2 className="text-xl md:text-2xl font-black text-white mb-2 font-heading uppercase tracking-wide">
+              {t("whatsapp.title")}
+            </h2>
+
+            <p className="text-xs md:text-sm text-slate-300 mb-6 leading-relaxed max-w-lg font-light">
+              {t("whatsapp.desc")}
+            </p>
+
+            <a
+              href="https://chat.whatsapp.com/B5EpWJsyeprHjGLILWXxoj?s=cl&p=i&ilr=0"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full py-4 md:py-5 px-6 rounded-2xl bg-[#25D366] hover:bg-[#20bd5a] text-[#010E13] font-black text-base md:text-xl tracking-wider uppercase transition-all duration-300 shadow-[0_0_30px_rgba(37,211,102,0.6)] hover:shadow-[0_0_50px_rgba(37,211,102,0.9)] flex items-center justify-center gap-3 transform hover:scale-[1.02] active:scale-[0.98] group cursor-pointer"
+            >
+              <svg className="w-7 h-7 md:w-8 md:h-8 fill-current flex-shrink-0" viewBox="0 0 24 24">
+                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+              </svg>
+              <span>{t("whatsapp.button")}</span>
+              <ArrowRight className="w-6 h-6 md:w-7 md:h-7 transition-transform group-hover:translate-x-1.5 flex-shrink-0" />
+            </a>
+          </div>
         </motion.div>
 
         {/* Optional Post-Registration Feedback Survey */}
@@ -148,7 +178,10 @@ function SuccessCard() {
           >
             <div className="flex items-center gap-2 mb-3 text-xs font-bold uppercase tracking-wider text-[#72E5F8]">
               <MessageSquareHeart className="w-4 h-4" />
-              How did you hear about us? <span className="text-slate-400 text-[10px] lowercase font-normal">(Optional)</span>
+              {t("survey.question")}{" "}
+              <span className="text-slate-400 text-[10px] lowercase font-normal">
+                {t("survey.optional")}
+              </span>
             </div>
 
             {feedbackSubmitted ? (
@@ -158,24 +191,24 @@ function SuccessCard() {
                 className="flex items-center gap-2 text-xs text-emerald-400 font-medium py-1"
               >
                 <CheckCircle2 className="w-4 h-4" />
-                <span>Thank you for your feedback! ✨</span>
+                <span>{t("survey.thanks")}</span>
               </motion.div>
             ) : (
               <div className="space-y-3">
                 <div className="flex flex-wrap gap-2">
-                  {feedbackOptions.map((option) => (
+                  {feedbackOptions.map((opt) => (
                     <button
-                      key={option}
+                      key={opt.val}
                       type="button"
                       disabled={isSubmittingFeedback}
-                      onClick={() => handleSelectFeedback(option)}
+                      onClick={() => handleSelectFeedback(opt.val)}
                       className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all duration-200 cursor-pointer ${
-                        selectedSource === option
+                        selectedSource === opt.val
                           ? "bg-[#72E5F8] text-[#010E13] font-bold shadow-md shadow-[#72E5F8]/20"
                           : "border border-white/10 bg-slate-900/50 text-slate-300 hover:border-[#72E5F8]/40 hover:text-white"
                       }`}
                     >
-                      {option}
+                      {opt.label}
                     </button>
                   ))}
                 </div>
@@ -191,7 +224,7 @@ function SuccessCard() {
                     >
                       <input
                         type="text"
-                        placeholder="Please specify source..."
+                        placeholder={t("survey.placeholder.other")}
                         value={customSource}
                         onChange={(e) => setCustomSource(e.target.value)}
                         className="flex-1 px-3 py-2 rounded-xl glass-input text-xs outline-none"
@@ -202,7 +235,7 @@ function SuccessCard() {
                         className="px-4 py-2 rounded-xl bg-[#72E5F8] text-[#010E13] font-bold text-xs hover:bg-[#5BB8FF] transition-all flex items-center gap-1 disabled:opacity-50"
                       >
                         <Send className="w-3.5 h-3.5" />
-                        Submit
+                        {t("survey.button.submit")}
                       </button>
                     </motion.form>
                   )}
@@ -220,17 +253,17 @@ function SuccessCard() {
         transition={{ delay: 0.6 }}
         className="border-t border-white/10 pt-6 flex flex-col gap-4"
       >
-        <div className="flex items-center justify-center gap-2 text-xs text-slate-500 font-light">
+        <div className="flex items-center justify-center gap-2 text-xs text-slate-400 font-light">
           <HelpCircle className="w-4 h-4 text-[#72E5F8] flex-shrink-0" />
           <span>
-            Need assistance?{" "}
+            {t("success.assistance")}{" "}
             <a
               href="https://hackxjr.lk/#oc"
               target="_blank"
               rel="noopener noreferrer"
               className="text-[#72E5F8] hover:underline transition-all"
             >
-              Contact us
+              {t("success.contactUs")}
             </a>
           </span>
         </div>
@@ -241,7 +274,7 @@ function SuccessCard() {
             border border-[#0A5C72]/30 bg-slate-900/40 hover:bg-slate-900 text-slate-300 hover:text-white"
         >
           <RefreshCcw className="w-4 h-4" />
-          Register Another Person
+          {t("success.button.registerAnother")}
         </button>
       </motion.div>
     </motion.div>
@@ -249,8 +282,15 @@ function SuccessCard() {
 }
 
 export default function RegistrationSuccessPage() {
+  const { t, lang } = useLanguage();
+
   return (
     <div className="w-full max-w-6xl mx-auto px-4 py-8 md:py-12 relative z-10">
+      {/* Top Floating Language Switcher Header */}
+      <div className="flex justify-end mb-4">
+        <LanguageSwitcher />
+      </div>
+
       {/* Brand Header */}
       <div className="text-center mb-10 flex flex-col items-center">
         <motion.div
@@ -272,9 +312,9 @@ export default function RegistrationSuccessPage() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="text-xs md:text-sm font-semibold tracking-widest text-[#8ba3c7] uppercase"
+          className="text-xs md:text-sm font-semibold tracking-widest text-[#8ba3c7] uppercase text-center leading-relaxed"
         >
-          Inter-School Innovation Competition — Online Awareness Session
+          {t("header.tagline")}
         </motion.p>
       </div>
 
@@ -304,12 +344,10 @@ export default function RegistrationSuccessPage() {
           <div className="space-y-6">
             <div className="space-y-3">
               <h3 className="font-heading font-extrabold text-lg text-white mb-2 tracking-wide text-center">
-                hackX Jr. 9.0 Online Awareness Session
+                {t("info.title")}
               </h3>
-              <p className="text-sm text-[#8ba3c7] leading-relaxed text-justify">
-                Join our exclusive online awareness session to learn everything about hackX Jr. 9.0 — Sri
-                Lanka’s premier island-wide school innovation hackathon. Discover how to build
-                groundbreaking technology solutions and succeed in the competition.
+              <p lang={lang} className="text-sm text-[#8ba3c7] leading-relaxed text-justify [text-align-last:left] hyphens-auto [word-break:break-word]">
+                {t("info.description")}
               </p>
             </div>
 
@@ -321,9 +359,9 @@ export default function RegistrationSuccessPage() {
                 </div>
                 <div>
                   <span className="text-[9px] text-slate-500 uppercase tracking-wide block">
-                    Date
+                    {t("info.meta.dateLabel")}
                   </span>
-                  <span className="text-xs font-bold text-white">1st Aug 2026</span>
+                  <span className="text-xs font-bold text-white">{t("info.meta.dateValue")}</span>
                 </div>
               </div>
 
@@ -333,9 +371,9 @@ export default function RegistrationSuccessPage() {
                 </div>
                 <div>
                   <span className="text-[9px] text-slate-500 uppercase tracking-wide block">
-                    Mode
+                    {t("info.meta.modeLabel")}
                   </span>
-                  <span className="text-xs font-bold text-white">Online</span>
+                  <span className="text-xs font-bold text-white">{t("info.meta.modeValue")}</span>
                 </div>
               </div>
             </div>
@@ -345,25 +383,24 @@ export default function RegistrationSuccessPage() {
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-[#5BB8FF] flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-slate-300">
-                  <strong className="text-white">National Recognition:</strong> Compete with top
-                  young innovators from schools across Sri Lanka's 25 districts.
+                  <strong className="text-white">{t("info.point1.title")}</strong>{" "}
+                  {t("info.point1.desc")}
                 </p>
               </div>
 
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-[#5BB8FF] flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-slate-300">
-                  <strong className="text-white">Online Workshops:</strong> Join live online
-                  sessions covering hackathons, innovation through technology, and proposal
-                  crafting.
+                  <strong className="text-white">{t("info.point2.title")}</strong>{" "}
+                  {t("info.point2.desc")}
                 </p>
               </div>
 
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-[#5BB8FF] flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-slate-300">
-                  <strong className="text-white">Industry Mentorship:</strong> Semi-finalist teams
-                  get paired with dedicated industry mentors to guide them through the final stage.
+                  <strong className="text-white">{t("info.point3.title")}</strong>{" "}
+                  {t("info.point3.desc")}
                 </p>
               </div>
             </div>
@@ -371,11 +408,9 @@ export default function RegistrationSuccessPage() {
 
           <div className="pt-4 border-t border-white/10 text-center">
             <p className="text-[10px] text-[#8ba3c7] uppercase tracking-wider font-semibold">
-              Organized by Department of Industrial Management
+              {t("info.org.line1")}
             </p>
-            <p className="text-[9px] text-slate-500 mt-1">
-              Faculty of Science, University of Kelaniya
-            </p>
+            <p className="text-[9px] text-slate-500 mt-1">{t("info.org.line2")}</p>
           </div>
         </motion.div>
       </div>
@@ -387,9 +422,7 @@ export default function RegistrationSuccessPage() {
         transition={{ delay: 0.4 }}
         className="mt-12 text-center"
       >
-        <p className="text-xs text-slate-500 font-light tracking-wide">
-          © 2026 hackX national hackathon series. All rights reserved.
-        </p>
+        <p className="text-xs text-slate-500 font-light tracking-wide">{t("info.footer.copyright")}</p>
       </motion.div>
     </div>
   );
