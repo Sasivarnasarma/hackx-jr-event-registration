@@ -112,7 +112,7 @@ export const dictionary: Record<Language, Record<string, string>> = {
     "header.subtitle": "ONLINE දැනුවත් කිරීමේ වැඩසටහන",
 
     // Public Registration Form
-    "form.title": "ONLINE දැනුවත් කිරීමේ වැඩසටහන් ලියාපදිංචිය",
+    "form.title": "ONLINE දැනුවත් කිරීමේ වැඩසටහන සඳහා ලියාපදිංචිය",
     "form.subtitle":
       "Online දැනුවත් කිරීමේ වැඩසටහන සඳහා ලියාපදිංචිය සම්පූර්ණ කිරීමට පහත තොරතුරු පුරවන්න.",
     "form.label.fullName": "සම්පූර්ණ නම",

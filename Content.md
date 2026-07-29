@@ -18,7 +18,7 @@
 
 | Key ID | English Original (Default) | Translation (Sinhala) |
 | :--- | :--- | :--- |
-| `form.title` | Reserve Your Spot | ඔබේ අසුන වෙන් කරගන්න |
+| `form.title` | ONLINE AWARENESS SESSION REGISTRATION | ONLINE දැනුවත් කිරීමේ වැඩසටහන සඳහා ලියාපදිංචිය |
 | `form.subtitle` | Fill out the details below to complete your registration for the Online Awareness Session. | Online දැනුවත් කිරීමේ වැඩසටහන සඳහා ලියාපදිංචිය සම්පූර්ණ කිරීමට පහත තොරතුරු පුරවන්න. |
 | `form.label.fullName` | Full Name | සම්පූර්ණ නම |
 | `form.placeholder.fullName` | Enter your full name | ඔබේ සම්පූර්ණ නම ඇතුලත් කරන්න |

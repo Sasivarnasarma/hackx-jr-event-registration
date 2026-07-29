@@ -181,7 +181,7 @@ export default function RegisterPage() {
                 </>
               ) : (
                 <>
-                  <span className="subtle-sweep-online">ONLINE</span> දැනුවත් කිරීමේ වැඩසටහන් ලියාපදිංචිය
+                  <span className="subtle-sweep-online">ONLINE</span> දැනුවත් කිරීමේ වැඩසටහන සඳහා ලියාපදිංචිය
                 </>
               )}
             </h2>
