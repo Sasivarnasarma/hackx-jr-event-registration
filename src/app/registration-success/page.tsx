@@ -154,7 +154,7 @@ function SuccessCard() {
             </p>
 
             <a
-              href="https://chat.whatsapp.com/B5EpWJsyeprHjGLILWXxoj?s=cl&p=i&ilr=0"
+              href="https://chat.whatsapp.com/DDfWs4BA12t2Dgtx0NJkef"
               target="_blank"
               rel="noopener noreferrer"
               className="w-full py-4 md:py-5 px-6 rounded-2xl bg-[#25D366] hover:bg-[#20bd5a] text-[#010E13] font-black text-base md:text-xl tracking-wider uppercase transition-all duration-300 shadow-[0_0_30px_rgba(37,211,102,0.6)] hover:shadow-[0_0_50px_rgba(37,211,102,0.9)] flex items-center justify-center gap-3 transform hover:scale-[1.02] active:scale-[0.98] group cursor-pointer"
